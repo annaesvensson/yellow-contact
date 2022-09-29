@@ -1,5 +1,5 @@
 <?php
-// Contact extension, https://github.com/datenstrom/yellow-extensions/tree/master/source/contact
+// Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
     const VERSION = "0.8.19";
