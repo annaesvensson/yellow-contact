@@ -2,7 +2,7 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "0.8.19";
+    const VERSION = "0.8.20";
     public $yellow;         // access to API
     
     // Handle initialisation
@@ -13,8 +13,6 @@ class YellowContact {
         $this->yellow->system->setDefault("contactEmailRestriction", "0");
         $this->yellow->system->setDefault("contactLinkRestriction", "0");
         $this->yellow->system->setDefault("contactSpamFilter", "advert|promot|market|click here");
-        $this->yellow->language->setDefault("contactMailHeader");
-        $this->yellow->language->setDefault("contactMailFooter");
     }
     
     // Handle page content of shortcut
