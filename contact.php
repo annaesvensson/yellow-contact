@@ -2,7 +2,7 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "0.8.20";
+    const VERSION = "0.8.21";
     public $yellow;         // access to API
     
     // Handle initialisation
@@ -20,7 +20,7 @@ class YellowContact {
         $output = null;
         if ($name=="contact" && ($type=="block" || $type=="inline")) {
             list($location) = $this->yellow->toolbox->getTextArguments($text);
-            if (empty($location)) $location = $this->yellow->system->get("contactLocation");
+            if (is_string_empty($location)) $location = $this->yellow->system->get("contactLocation");
             $output = "<div class=\"".htmlspecialchars($name)."\">\n";
             $output .= "<form class=\"contact-form\" action=\"".$page->base.$location."\" method=\"post\">\n";
             $output .= "<p class=\"contact-name\"><label for=\"name\">".$this->yellow->language->getTextHtml("contactName")."</label><br /><input type=\"text\" class=\"form-control\" name=\"name\" id=\"name\" value=\"\" /></p>\n";
@@ -80,9 +80,10 @@ class YellowContact {
             $userEmail = $this->yellow->page->get("email");
         }
         if ($this->yellow->system->get("contactLinkRestriction") && $this->checkClickable($message)) $status = "review";
-        if (empty($senderName) || empty($senderEmail) || empty($message) || empty($consent)) $status = "incomplete";
-        if (!empty($senderEmail) && !filter_var($senderEmail, FILTER_VALIDATE_EMAIL)) $status = "invalid";
-        if (empty($userEmail) || !filter_var($userEmail, FILTER_VALIDATE_EMAIL)) $status = "settings";
+        if (is_string_empty($senderName) || is_string_empty($senderEmail) ||
+            is_string_empty($message) || is_string_empty($consent)) $status = "incomplete";
+        if (!is_string_empty($senderEmail) && !filter_var($senderEmail, FILTER_VALIDATE_EMAIL)) $status = "invalid";
+        if (is_string_empty($userEmail) || !filter_var($userEmail, FILTER_VALIDATE_EMAIL)) $status = "settings";
         if ($status=="send") {
             $mailTo = mb_encode_mimeheader("$userName")." <$userEmail>";
             $mailSubject = mb_encode_mimeheader($this->yellow->page->get("title"));
