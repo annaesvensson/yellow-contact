@@ -6,6 +6,10 @@ E-Mail-Kontaktseite.
 
 <p align="center"><img src="contact-screenshot.png?raw=true" alt="Bildschirmfoto"></p>
 
+## Wie man eine Erweiterung installiert
+
+[ZIP-Datei herunterladen](https://github.com/annaesvensson/yellow-contact/archive/main.zip) und in dein `system/extensions`-Verzeichnis kopieren. [Weitere Informationen zu Erweiterungen](https://github.com/annaesvensson/yellow-update/tree/main/README-de.md).
+
 ## Wie man eine Kontaktseite benutzt
 
 Die Kontaktseite ist auf deiner Webseite vorhanden als `http://website/contact/`. Die E-Mail des Webmasters wird in der Datei `system/extensions/yellow-system.ini` festgelegt. Ganz oben auf einer Seite kannst du einen anderen `Author` und `Email` in den [Seiteneinstellungen](https://github.com/annaesvensson/yellow-core/tree/main/README-de.md#einstellungen-seite) festlegen. Um ein Kontaktformular auf deiner Webseite anzuzeigen, benutze eine `[contact]`-Abkürzung.
@@ -82,10 +86,6 @@ Die folgenden Einstellungen können in der Datei `system/extensions/yellow-syste
 Die folgenden Dateien können angepasst werden:
 
 `system/layouts/contact.html` = Layoutdatei für Kontaktseite  
-
-## Installation
-
-[Erweiterung herunterladen](https://github.com/annaesvensson/yellow-contact/archive/main.zip) und die ZIP-Datei in dein `system/extensions`-Verzeichnis kopieren. [Weitere Informationen zu Erweiterungen](https://github.com/annaesvensson/yellow-update/tree/main/README-de.md).
 
 ## Entwickler
 

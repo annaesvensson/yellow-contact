@@ -6,6 +6,10 @@ E-post kontaktsida.
 
 <p align="center"><img src="contact-screenshot.png?raw=true" alt="Skärmdump"></p>
 
+## Hur man installerar ett tillägg
+
+[Ladda ner ZIP-filen](https://github.com/annaesvensson/yellow-contact/archive/main.zip) och kopiera den till din `system/extensions` mapp. [Läs mer om tillägg](https://github.com/annaesvensson/yellow-update/tree/main/README-sv.md).
+
 ## Hur man använder en kontaktsida
 
 Kontaktsidan finns tillgänglig på din webbplats som `http://website/contact/`. Webmasterns email definieras i filen `system/extensions/yellow-system.ini`. Du kan ställa in en annan `Author` and `Email` i [sidinställningar](https://github.com/annaesvensson/yellow-core/tree/main/README-sv.md#inställningar-page) högst upp på en sida. För att visa ett kontaktformulär på din webbplats, använd en `[contact]` förkortning.
@@ -82,10 +86,6 @@ Följande inställningar kan konfigureras i filen `system/extensions/yellow-syst
 Följande filer kan anpassas:
 
 `system/layouts/contact.html` = layoutfil för kontaktsida  
-
-## Installation
-
-[Ladda ner tillägg](https://github.com/annaesvensson/yellow-contact/archive/main.zip) och kopiera ZIP-fil till din `system/extensions` mapp. [Läs mer om tillägg](https://github.com/annaesvensson/yellow-update/tree/main/README-sv.md).
 
 ## Utvecklare
 
