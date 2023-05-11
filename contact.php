@@ -2,7 +2,7 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "0.8.21";
+    const VERSION = "0.8.22";
     public $yellow;         // access to API
     
     // Handle initialisation
@@ -69,6 +69,7 @@ class YellowContact {
         $spamFilter = $this->yellow->system->get("contactSpamFilter");
         $sitename = $this->yellow->system->get("sitename");
         $siteEmail = $this->yellow->system->get("contactSiteEmail");
+        $subject = $this->yellow->page->get("title");
         $header = $this->getMailHeader($senderName, $senderEmail);
         $footer = $this->getMailFooter($referer);
         $userName = $this->yellow->system->get("author");
@@ -85,21 +86,23 @@ class YellowContact {
         if (!is_string_empty($senderEmail) && !filter_var($senderEmail, FILTER_VALIDATE_EMAIL)) $status = "invalid";
         if (is_string_empty($userEmail) || !filter_var($userEmail, FILTER_VALIDATE_EMAIL)) $status = "settings";
         if ($status=="send") {
-            $mailTo = mb_encode_mimeheader("$userName")." <$userEmail>";
-            $mailSubject = mb_encode_mimeheader($this->yellow->page->get("title"));
-            $mailHeaders = mb_encode_mimeheader("From: $sitename")." <$siteEmail>\r\n";
-            $mailHeaders .= mb_encode_mimeheader("Reply-To: $senderName")." <$senderEmail>\r\n";
-            $mailHeaders .= mb_encode_mimeheader("X-Referer-Url: ".$referer)."\r\n";
-            $mailHeaders .= mb_encode_mimeheader("X-Request-Url: ".$this->yellow->page->getUrl())."\r\n";
+            $mailHeaders = array(
+                "To" => "$userName <$userEmail>",
+                "From" => "$sitename <$siteEmail>",
+                "Reply-To" => "$senderName <$senderEmail>",
+                "Date" => date(DATE_RFC2822),
+                "Subject" => $subject,
+                "Mime-Version" => "1.0",
+                "Content-Type" => "text/plain; charset=utf-8",
+                "X-Referer-Url" => $referer,
+                "X-Request-Url" => $this->yellow->page->getUrl());
             if ($spamFilter!="none" && preg_match("/$spamFilter/i", $message)) {
-                $mailSubject = mb_encode_mimeheader($this->yellow->language->getText("contactMailSpam")." ".$this->yellow->page->get("title"));
-                $mailHeaders .= "X-Spam-Flag: YES\r\n";
-                $mailHeaders .= "X-Spam-Status: Yes, score=1\r\n";
+                $mailHeaders["Subject"] = $this->yellow->language->getText("contactMailSpam")." ".$subject;
+                $mailHeaders["X-Spam-Flag"] = "YES";
+                $mailHeaders["X-Spam-Status"] = "Yes, score=1";
             }
-            $mailHeaders .= "Mime-Version: 1.0\r\n";
-            $mailHeaders .= "Content-Type: text/plain; charset=utf-8\r\n";
             $mailMessage = "$header\r\n\r\n$message\r\n-- \r\n$footer";
-            $status = mail($mailTo, $mailSubject, $mailMessage, $mailHeaders) ? "done" : "error";
+            $status = $this->yellow->toolbox->mail("contact", $mailHeaders, $mailMessage) ? "done" : "error";
         }
         return $status;
     }
