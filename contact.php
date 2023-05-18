@@ -2,7 +2,7 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "0.8.22";
+    const VERSION = "0.8.23";
     public $yellow;         // access to API
     
     // Handle initialisation
@@ -39,7 +39,7 @@ class YellowContact {
     // Handle page layout
     public function onParsePageLayout($page, $name) {
         if ($name=="contact") {
-            if ($this->yellow->isCommandLine()) $page->error(500, "Static website not supported!");
+            if ($this->yellow->lookup->isCommandLine()) $page->error(500, "Static website not supported!");
             if (!$page->isRequest("referer")) {
                 $page->setRequest("referer", $this->yellow->toolbox->getServer("HTTP_REFERER"));
                 $page->setHeader("Last-Modified", $this->yellow->toolbox->getHttpDateFormatted(time()));
@@ -90,8 +90,8 @@ class YellowContact {
                 "To" => "$userName <$userEmail>",
                 "From" => "$sitename <$siteEmail>",
                 "Reply-To" => "$senderName <$senderEmail>",
-                "Date" => date(DATE_RFC2822),
                 "Subject" => $subject,
+                "Date" => date(DATE_RFC2822),
                 "Mime-Version" => "1.0",
                 "Content-Type" => "text/plain; charset=utf-8",
                 "X-Referer-Url" => $referer,
