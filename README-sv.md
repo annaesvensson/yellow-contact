@@ -68,8 +68,8 @@ Innehållsfil med en annan kontaktperson på kontaktsidan:
 Konfigurera olika skräppostfilter i inställningar:
 
     ContactSpamFilter: advert|promot|market|click here
-    ContactSpamFilter: advert|promot|market|click here|youtube|instagram|twitter
-    ContactSpamFilter: annons|köp|rabatt|singlar nära dig|sökmotoroptimering
+    ContactSpamFilter: advert|buy|likes|followers|subscribers
+    ContactSpamFilter: advert|köp|sälj|rabatt|sökmotoroptimering
 
 ## Inställningar
 

@@ -68,8 +68,8 @@ Inhaltsdatei mit einer anderen Kontaktperson auf der Kontaktseite:
 Verschiedene Spamfilter in den Einstellungen festlegen:
 
     ContactSpamFilter: advert|promot|market|click here
-    ContactSpamFilter: advert|promot|market|click here|youtube|instagram|twitter
-    ContactSpamFilter: werbung|kaufe|rabatt|singles in deiner nähe|suchmaschinenoptimierung
+    ContactSpamFilter: advert|buy|likes|followers|subscribers
+    ContactSpamFilter: advert|kaufe|anbiete|rabatt|suchmaschinenoptimierung
 
 ## Einstellungen
 

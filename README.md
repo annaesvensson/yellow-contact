@@ -68,8 +68,8 @@ Content file with a different contact person on the contact page:
 Configuring different spam filters in the settings:
 
     ContactSpamFilter: advert|promot|market|click here
-    ContactSpamFilter: advert|promot|market|click here|youtube|instagram|twitter
-    ContactSpamFilter: advert|buy|discount|singles near you|search engine optimisation
+    ContactSpamFilter: advert|buy|likes|followers|subscribers
+    ContactSpamFilter: advert|buy|sell|discount|search engine optimisation
 
 ## Settings
 
