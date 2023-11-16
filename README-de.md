@@ -4,7 +4,7 @@
 
 E-Mail-Kontaktseite.
 
-<p align="center"><img src="contact-screenshot.png?raw=true" alt="Bildschirmfoto"></p>
+<p align="center"><img src="SCREENSHOT.png?raw=true" alt="Bildschirmfoto"></p>
 
 ## Wie man eine Erweiterung installiert
 
