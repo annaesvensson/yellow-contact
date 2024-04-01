@@ -2,7 +2,7 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "0.8.23";
+    const VERSION = "0.8.24";
     public $yellow;         // access to API
     
     // Handle initialisation
@@ -15,8 +15,8 @@ class YellowContact {
         $this->yellow->system->setDefault("contactSpamFilter", "advert|promot|market|click here");
     }
     
-    // Handle page content of shortcut
-    public function onParseContentShortcut($page, $name, $text, $type) {
+    // Handle page content element
+    public function onParseContentElement($page, $name, $text, $attributes, $type) {
         $output = null;
         if ($name=="contact" && ($type=="block" || $type=="inline")) {
             list($location) = $this->yellow->toolbox->getTextArguments($text);
