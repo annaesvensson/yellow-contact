@@ -2,7 +2,7 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "0.8.24";
+    const VERSION = "0.8.25";
     public $yellow;         // access to API
     
     // Handle initialisation
@@ -87,9 +87,9 @@ class YellowContact {
         if (is_string_empty($userEmail) || !filter_var($userEmail, FILTER_VALIDATE_EMAIL)) $status = "settings";
         if ($status=="send") {
             $mailHeaders = array(
-                "To" => "$userName <$userEmail>",
-                "From" => "$sitename <$siteEmail>",
-                "Reply-To" => "$senderName <$senderEmail>",
+                "To" => $this->yellow->lookup->normaliseAddress("$userName <$userEmail>"),
+                "From" => $this->yellow->lookup->normaliseAddress("$sitename <$siteEmail>"),
+                "Reply-To" => $this->yellow->lookup->normaliseAddress("$senderName <$senderEmail>"),
                 "Subject" => $subject,
                 "Date" => date(DATE_RFC2822),
                 "Mime-Version" => "1.0",
