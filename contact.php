@@ -2,7 +2,7 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "0.9.1";
+    const VERSION = "0.9.2"; // ACS 
     public $yellow;         // access to API
     
     // Handle initialisation
@@ -19,19 +19,32 @@ class YellowContact {
     public function onParseContentElement($page, $name, $text, $attributes, $type) {
         $output = null;
         if ($name=="contact" && ($type=="block" || $type=="inline")) {
+            $this->onParsePageLayout($page, $name); # ACS - added as we need this status informations also for the dynamic page
             list($location) = $this->yellow->toolbox->getTextArguments($text);
+            if (is_string_empty($location)) $location = $page->location; // ACS - to ensue the local dynamic form get used in case of submit action
             if (is_string_empty($location)) $location = $this->yellow->system->get("contactLocation");
-            $output = "<div class=\"".htmlspecialchars($name)."\">\n";
-            $output .= "<form class=\"contact-form\" action=\"".$page->base.$location."\" method=\"post\">\n";
-            $output .= "<p class=\"contact-name\"><label for=\"name\">".$this->yellow->language->getTextHtml("contactName")."</label><br /><input type=\"text\" class=\"form-control\" name=\"name\" id=\"name\" value=\"\" /></p>\n";
-            $output .= "<p class=\"contact-email\"><label for=\"email\">".$this->yellow->language->getTextHtml("contactEmail")."</label><br /><input type=\"text\" class=\"form-control\" name=\"email\" id=\"email\" value=\"\" /></p>\n";
-            $output .= "<p class=\"contact-message\"><label for=\"message\">".$this->yellow->language->getTextHtml("contactMessage")."</label><br /><textarea class=\"form-control\" name=\"message\" id=\"message\" rows=\"7\" cols=\"70\"></textarea></p>\n";
-            $output .= "<p class=\"contact-consent\"><input type=\"checkbox\" name=\"consent\" value=\"consent\" id=\"consent\"> <label for=\"consent\">".$this->yellow->language->getTextHtml("contactConsent")."</label></p>\n";
-            $output .= "<input type=\"hidden\" name=\"referer\" value=\"".$page->getUrl()."\" />\n";
-            $output .= "<input type=\"hidden\" name=\"status\" value=\"send\" />\n";
-            $output .= "<input type=\"submit\" value=\"".$this->yellow->language->getTextHtml("contactButton")."\" class=\"btn contact-btn\" />\n";
-            $output .= "</form>\n";
-            $output .= "</div>\n";
+            
+           if ($this->yellow->page->get("status")!="done") { // ACS this if else structure is also stolen from original contact.html
+                $captcha = $this->getRandomCaptchaString(); // ACS Create an random captcha sting
+                $output = "<div class=\"".htmlspecialchars($name)."\">\n";
+                $output .= "<p class=\"".$this->yellow->page->getHtml("status")."\">".$this->yellow->language->getTextHtml("contactStatus".ucfirst($this->yellow->page->get("status")))."</p>\n"; // ACS - copied in from original contact.html to have a status line
+                $output .= "<form class=\"contact-form\" action=\"".$page->base.$location."\" method=\"post\">\n";
+                $output .= "<p class=\"contact-name\"><label for=\"name\">".$this->yellow->language->getTextHtml("contactName")."</label><br /><input type=\"text\" class=\"form-control\" name=\"name\" id=\"name\" value=\"".$this->yellow->page->getRequestHtml("name")."\" /></p>\n";
+                $output .= "<p class=\"contact-email\"><label for=\"email\">".$this->yellow->language->getTextHtml("contactEmail")."</label><br /><input type=\"text\" class=\"form-control\" name=\"email\" id=\"email\" value=\"".$this->yellow->page->getRequestHtml("email")."\" /></p>\n";
+                $output .= "<p class=\"contact-message\"><label for=\"message\">".$this->yellow->language->getTextHtml("contactMessage")."</label><br /><textarea class=\"form-control\" name=\"message\" id=\"message\" rows=\"7\" cols=\"70\">".$this->yellow->page->getRequestHtml("message")."</textarea></p>\n";
+                $output .= "<p class=\"contact-consent\"><input type=\"checkbox\" name=\"consent\" value=\"consent\" id=\"consent\"".($this->yellow->page->isRequest("consent") ? " checked=\"checked\"" : "")."> <label for=\"consent\">".$this->yellow->language->getTextHtml("contactConsent")."</label></p>\n";
+            
+                $output .= "<p class=\"contact-captcha\">".$this->getCaptcha($captcha)."<br /><input type=\"tel\" class=\"form-control\" name=\"captcha\" id=\"captcha\" placeholder=\"enter captcha\" pattern=\"[0-9]{6}\" maxlength=\"6\"  /></p>\n"; // ACS - "tel" is a super input type for this - TODO: having a languge specific test string
+                $output .= "<input type=\"hidden\" name=\"captcha_hash\" value=\"".$this->createCaptchaHash($captcha)."\" />\n";
+                
+                $output .= "<input type=\"hidden\" name=\"referer\" value=\"".$page->getUrl()."\" />\n";
+                $output .= "<input type=\"hidden\" name=\"status\" value=\"send\" />\n";
+                $output .= "<input type=\"submit\" value=\"".$this->yellow->language->getTextHtml("contactButton")."\" class=\"btn contact-btn\" />\n";
+                $output .= "</form>\n";
+                $output .= "</div>\n";
+            } else {
+                $output =  "<p>".$this->yellow->language->getTextHtml("contactStatusDone")."<p>";
+            }
         }
         return $output;
     }
@@ -66,6 +79,8 @@ class YellowContact {
         $message = trim($this->yellow->page->getRequest("message"));
         $consent = trim($this->yellow->page->getRequest("consent"));
         $referer = trim($this->yellow->page->getRequest("referer"));
+        $captcha = trim($this->yellow->page->getRequest("captcha")); // ACS
+        $captchaHash = trim($this->yellow->page->getRequest("captcha_hash")); // ACS
         $spamFilter = $this->yellow->system->get("contactSpamFilter");
         $sitename = $this->yellow->system->get("sitename");
         $siteEmail = $this->yellow->system->get("contactSiteEmail");
@@ -74,6 +89,7 @@ class YellowContact {
         $footer = $this->getMailFooter($referer);
         $userName = $this->yellow->system->get("author");
         $userEmail = $this->yellow->system->get("email");
+
         if ($this->yellow->page->isExisting("author") && !$this->yellow->system->get("contactEmailRestriction")) {
             $userName = $this->yellow->page->get("author");
         }
@@ -83,6 +99,7 @@ class YellowContact {
         if ($this->yellow->system->get("contactLinkRestriction") && $this->checkClickable($message)) $status = "review";
         if (is_string_empty($senderName) || is_string_empty($senderEmail) ||
             is_string_empty($message) || is_string_empty($consent)) $status = "incomplete";
+        if (is_string_empty($captcha) ) $status = "incomplete"; // ACS TODO: Make anew status for this missing captcha
         if (!is_string_empty($senderEmail) && !filter_var($senderEmail, FILTER_VALIDATE_EMAIL)) $status = "invalid";
         if (is_string_empty($userEmail) || !filter_var($userEmail, FILTER_VALIDATE_EMAIL)) $status = "settings";
         if ($status=="send") {
@@ -149,4 +166,67 @@ class YellowContact {
         }
         return $found;
     }
+
+
+    // Create captcha string - ASC
+    public function getRandomCaptchaString($length = 6) {
+        $stringSpace = '0123456789';
+        $stringLength = strlen($stringSpace);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i ++) {
+            $randomString = $randomString . $stringSpace[rand(0, $stringLength - 1)];
+        }
+        return $randomString;
+    }
+
+    // Create captcha hash - ASC
+    public function createCaptchaHash($string) {
+        $hash = $this->yellow->toolbox->createHash($string, "sha256");
+        if (is_string_empty($hash)) $hash = "padd"."error-hash-algorithm-sha256";
+        return $hash;
+    }
+       
+    // Create captcha image - ASC
+    public function getCaptcha($string) {
+
+        // Begin output buffering
+        ob_start();
+
+        // generate the captcha image in some magic way
+        $w = 80; $h = 30;
+        $image = imagecreate($w, $h);
+        $background = imagecolorallocatealpha($image, 127, 127, 127, 63);
+        imagefill($image, 0, 0, $background);
+
+        $color[0] = imagecolorallocate($image, 0, 0, 0);    
+        $color[1] = imagecolorallocate($image, 255, 255, 255);
+
+        $strlen = strlen($string);
+        for( $i = 0; $i < $strlen; $i++ ) {
+            $char = substr( $string, $i, 1 );
+            $s = rand(0, 9);
+            $x = $i * 10;
+            $y = rand(0, 9);
+            $c = rand(0, 1);
+
+            imagechar($image, 4, $x + 12, $y + 3, $char, $color[$c]);
+            if ($y <= 3) imagechar($image, 4, $x + 12, $y + 6, "_", $color[(1-$c)]);
+            if ($y >= 6) imagechar($image, 4, $x + 12, $y - 12, "_", $color[(1-$c)]);
+        }  
+        imagepng($image);
+
+        // and finally retrieve the byte stream
+        $rawImageBytes = ob_get_clean();
+
+        imageDestroy($image);
+
+        return '<img src="data:image/png;base64,'. base64_encode( $rawImageBytes ) . '">';
+
+    }
+
+    // Check captcha - ASC
+    public function checkCaptcha($string, $hash) {
+        return $this->yellow->toolbox->verifyHash($string, "sha256", $hash);
+    }
+    
 }
