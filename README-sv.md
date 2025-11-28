@@ -77,7 +77,7 @@ Följande inställningar kan konfigureras i filen `system/extensions/yellow-syst
 
 `Author` = webmasterns namn  
 `Email` = webmasterns email  
-`ContactSiteEmail` = webbplatsens email, som används för genererade meddelanden  
+`ContactSiteEmail` = email för utgående meddelanden  
 `ContactLocation` = plats för kontaktsidan  
 `ContactEmailRestriction` = aktivera emailbegränsning, 1 eller 0  
 `ContactLinkRestriction` = aktivera länkbegränsning, 1 eller 0  

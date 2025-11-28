@@ -77,7 +77,7 @@ The following settings can be configured in file `system/extensions/yellow-syste
 
 `Author` = name of the webmaster  
 `Email` = email of the webmaster  
-`ContactSiteEmail` = email of the website, used for generated messages  
+`ContactSiteEmail` = email for outgoing messages  
 `ContactLocation` = contact page location  
 `ContactEmailRestriction` = enable email restriction, 1 or 0  
 `ContactLinkRestriction` = enable link restriction, 1 or 0  
