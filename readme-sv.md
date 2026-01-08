@@ -1,22 +1,22 @@
-<p align="right"><a href="README-de.md">Deutsch</a> &nbsp; <a href="README.md">English</a> &nbsp; <a href="README-sv.md">Svenska</a></p>
+<p align="right"><a href="readme-de.md">Deutsch</a> &nbsp; <a href="readme.md">English</a> &nbsp; <a href="readme-sv.md">Svenska</a></p>
 
 # Contact 0.9.1
 
 E-post kontaktsida.
 
-<p align="center"><img src="SCREENSHOT.png" alt="Skärmdump"></p>
+<p align="center"><img src="screenshot.png" alt="Skärmdump"></p>
 
 ## Hur man installerar ett tillägg
 
-[Ladda ner ZIP-filen](https://github.com/annaesvensson/yellow-contact/archive/refs/heads/main.zip) och kopiera den till din `system/extensions` mapp. [Läs mer om tillägg](https://github.com/annaesvensson/yellow-update/tree/main/README-sv.md).
+[Ladda ner ZIP-filen](https://github.com/annaesvensson/yellow-contact/archive/refs/heads/main.zip) och kopiera den till din `system/extensions` mapp. [Läs mer om tillägg](https://github.com/annaesvensson/yellow-update/tree/main/readme-sv.md).
 
 ## Hur man använder en kontaktsida
 
-Kontaktsidan finns tillgänglig på din webbplats som `http://website/contact/`. Webmasterns email definieras i filen `system/extensions/yellow-system.ini`. Du kan ställa in en annan `Author` and `Email` i [sidinställningar](https://github.com/annaesvensson/yellow-core/tree/main/README-sv.md#inställningar-page) högst upp på en sida. För att visa ett kontaktformulär på din webbplats, använd en `[contact]` förkortning.
+Kontaktsidan finns tillgänglig på din webbplats som `http://website/contact/`. Webmasterns email definieras i filen `system/extensions/yellow-system.ini`. Du kan ställa in en annan `Author` and `Email` i [sidinställningar](https://github.com/annaesvensson/yellow-core/tree/main/readme-sv.md#inställningar-page) högst upp på en sida. För att visa ett kontaktformulär på din webbplats, använd en `[contact]` förkortning.
 
 ## Hur man begränsar en kontaktsida
 
-Om du inte vill att meddelanden ska skickas till vilken kontaktperson som helst begränsar du email. Öppna filen `system/extensions/yellow-system.ini` och ändra `ContactEmailRestriction: 1`. Alla kontaktmeddelanden går direkt till webmastern och det är inte längre möjligt att ställa in en annan kontaktperson i [sidinställningar](https://github.com/annaesvensson/yellow-core/tree/main/README-sv.md#inställningar-page) högst upp på en sida.
+Om du inte vill att meddelanden ska skickas till vilken kontaktperson som helst begränsar du email. Öppna filen `system/extensions/yellow-system.ini` och ändra `ContactEmailRestriction: 1`. Alla kontaktmeddelanden går direkt till webmastern och det är inte längre möjligt att ställa in en annan kontaktperson i [sidinställningar](https://github.com/annaesvensson/yellow-core/tree/main/readme-sv.md#inställningar-page) högst upp på en sida.
 
 Om du inte vill att meddelanden med länkar ska skickas begränsar du länkar. Öppna filen `system/extensions/yellow-system.ini` och ändra `ContactLinkRestriction: 1`. Kontaktmeddelanden får då inte innehålla klickbara länkar, detta blockerar många oönskade meddelanden. Du kan också ställa in nyckelord i skräppostfiltret, lyckligtvis skickar många spammare samma meddelande flera gånger. 
 
