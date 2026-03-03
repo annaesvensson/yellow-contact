@@ -1,4 +1,4 @@
-# Contact 0.9.1
+# Contact 0.9.2
 
 E-post kontaktsida. Utvecklad av Anna Svensson.
 
