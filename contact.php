@@ -2,13 +2,12 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "0.9.2";
+    const VERSION = "0.9.3";
     public $yellow;         // access to API
     
     // Handle initialisation
     public function onLoad($yellow) {
         $this->yellow = $yellow;
-        $this->yellow->system->setDefault("contactSiteEmail", "noreply");
         $this->yellow->system->setDefault("contactLocation", "/contact/");
         $this->yellow->system->setDefault("contactEmailRestriction", "0");
         $this->yellow->system->setDefault("contactLinkRestriction", "0");
@@ -68,7 +67,7 @@ class YellowContact {
         $referer = trim($this->yellow->page->getRequest("referer"));
         $spamFilter = $this->yellow->system->get("contactSpamFilter");
         $sitename = $this->yellow->system->get("sitename");
-        $siteEmail = $this->yellow->system->get("contactSiteEmail");
+        $siteEmail = $this->yellow->system->get("from");
         $subject = $this->yellow->page->get("title");
         $header = $this->getMailHeader($senderName, $senderEmail);
         $footer = $this->getMailFooter($referer);

@@ -1,4 +1,4 @@
-# Contact 0.9.2
+# Contact 0.9.3
 
 E-post kontaktsida. Utvecklad av Anna Svensson.
 
@@ -75,7 +75,7 @@ Följande inställningar kan konfigureras i filen `system/extensions/yellow-syst
 
 `Author` = webmasterns namn  
 `Email` = webmasterns email  
-`ContactSiteEmail` = email för utgående meddelanden  
+`From` = email för utgående meddelanden  
 `ContactLocation` = plats för kontaktsidan  
 `ContactEmailRestriction` = aktivera emailbegränsning, 1 eller 0  
 `ContactLinkRestriction` = aktivera länkbegränsning, 1 eller 0  

@@ -1,4 +1,4 @@
-# Contact 0.9.2
+# Contact 0.9.3
 
 Email contact page. Developed by Anna Svensson.
 
@@ -75,7 +75,7 @@ The following settings can be configured in file `system/extensions/yellow-syste
 
 `Author` = name of the webmaster  
 `Email` = email of the webmaster  
-`ContactSiteEmail` = email for outgoing messages  
+`From` = email for outgoing messages  
 `ContactLocation` = contact page location  
 `ContactEmailRestriction` = enable email restriction, 1 or 0  
 `ContactLinkRestriction` = enable link restriction, 1 or 0  

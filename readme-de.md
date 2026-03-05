@@ -1,4 +1,4 @@
-# Contact 0.9.2
+# Contact 0.9.3
 
 E-Mail-Kontaktseite. Entwickelt von Anna Svensson.
 
@@ -75,7 +75,7 @@ Die folgenden Einstellungen können in der Datei `system/extensions/yellow-syste
 
 `Author` = Name des Webmasters  
 `Email` = E-Mail des Webmasters  
-`ContactSiteEmail` = Email für ausgehende Nachrichten  
+`From` = E-Mail für ausgehende Nachrichten  
 `ContactLocation` = Ort der Kontaktseite  
 `ContactEmailRestriction` = E-Mail-Beschränkung aktivieren, 1 oder 0  
 `ContactLinkRestriction` = Linkbeschränkung aktivieren, 1 oder 0  
