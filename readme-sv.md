@@ -1,6 +1,6 @@
 # Contact 0.9.3
 
-E-post kontaktsida. Utvecklad av Anna Svensson.
+Kontaktformulär för att skicka e-post. Utvecklad av Anna Svensson.
 
 <p align="center"><img src="screenshot.png" alt="Skärmdump" /></p>
 
@@ -8,11 +8,11 @@ E-post kontaktsida. Utvecklad av Anna Svensson.
 
 [Ladda ner ZIP-filen](https://github.com/annaesvensson/yellow-contact/archive/refs/heads/main.zip) och kopiera den till din `system/extensions` mapp. [Läs mer om tillägg](https://github.com/annaesvensson/yellow-update/tree/main/readme-sv.md).
 
-## Hur man använder en kontaktsida
+## Hur man använder ett kontaktformulär
 
-Kontaktsidan finns tillgänglig på din webbplats som `http://website/contact/`. Webmasterns email definieras i filen `system/extensions/yellow-system.ini`. Du kan ställa in en annan `Author` and `Email` i [sidinställningar](https://github.com/annaesvensson/yellow-core/tree/main/readme-sv.md#inställningar-page) högst upp på en sida. För att visa ett kontaktformulär på din webbplats, använd en `[contact]` förkortning.
+Kontaktformuläret finns tillgänglig på din webbplats som `http://website/contact/`. Webmasterns email definieras i filen `system/extensions/yellow-system.ini`. Du kan ställa in en annan `Author` and `Email` i [sidinställningar](https://github.com/annaesvensson/yellow-core/tree/main/readme-sv.md#inställningar-page) högst upp på en sida. För att visa ett kontaktformulär på din webbplats, använd en `[contact]` förkortning.
 
-## Hur man begränsar en kontaktsida
+## Hur man begränsar ett kontaktformulär
 
 Om du inte vill att meddelanden ska skickas till vilken kontaktperson som helst begränsar du email. Öppna filen `system/extensions/yellow-system.ini` och ändra `ContactEmailRestriction: 1`. Alla kontaktmeddelanden går direkt till webmastern och det är inte längre möjligt att ställa in en annan kontaktperson i [sidinställningar](https://github.com/annaesvensson/yellow-core/tree/main/readme-sv.md#inställningar-page) högst upp på en sida.
 
@@ -39,7 +39,7 @@ Innehållsfil med kontaktformulär:
 
     [contact]
 
-Innehållsfil med en annan kontaktperson på kontaktsidan:
+Innehållsfil med länk till kontaktsidan:
 
     ---
     Title: Exempelsida

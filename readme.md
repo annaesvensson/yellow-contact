@@ -1,6 +1,6 @@
 # Contact 0.9.3
 
-Email contact page. Developed by Anna Svensson.
+Contact form for sending emails. Developed by Anna Svensson.
 
 <p align="center"><img src="screenshot.png" alt="Screenshot" /></p>
 
@@ -8,11 +8,11 @@ Email contact page. Developed by Anna Svensson.
 
 [Download ZIP file](https://github.com/annaesvensson/yellow-contact/archive/refs/heads/main.zip) and copy it into your `system/extensions` folder. [Learn more about extensions](https://github.com/annaesvensson/yellow-update).
 
-## How to use a contact page
+## How to use a contact form
 
-The contact page is available on your website as `http://website/contact/`. The webmaster's email is defined in file `system/extensions/yellow-system.ini`. You can set a different `Author` and `Email` in the [page settings](https://github.com/annaesvensson/yellow-core#settings-page) at the top of a page. To show a contact form on your website use a `[contact]` shortcut.
+The contact form is available on your website as `http://website/contact/`. The webmaster's email is defined in file `system/extensions/yellow-system.ini`. You can set a different `Author` and `Email` in the [page settings](https://github.com/annaesvensson/yellow-core#settings-page) at the top of a page. To show a contact form on your website use a `[contact]` shortcut.
 
-## How to restrict a contact page
+## How to restrict a contact form
 
 If you don't want that messages are sent to any contact person, then restrict emails. Open file `system/extensions/yellow-system.ini` and change `ContactEmailRestriction: 1`. All contact messages go directly to the webmaster and it's no longer possible to set a different contact person in the [page settings](https://github.com/annaesvensson/yellow-core#settings-page) at the top of a page.
 

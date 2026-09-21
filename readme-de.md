@@ -1,6 +1,6 @@
 # Contact 0.9.3
 
-E-Mail-Kontaktseite. Entwickelt von Anna Svensson.
+Kontaktformular zum Versenden von E-Mails. Entwickelt von Anna Svensson.
 
 <p align="center"><img src="screenshot.png" alt="Bildschirmfoto" /></p>
 
@@ -8,15 +8,15 @@ E-Mail-Kontaktseite. Entwickelt von Anna Svensson.
 
 [ZIP-Datei herunterladen](https://github.com/annaesvensson/yellow-contact/archive/refs/heads/main.zip) und in dein `system/extensions`-Verzeichnis kopieren. [Weitere Informationen zu Erweiterungen](https://github.com/annaesvensson/yellow-update/tree/main/readme-de.md).
 
-## Wie man eine Kontaktseite benutzt
+## Wie man ein Kontaktformular benutzt
 
-Die Kontaktseite ist auf deiner Webseite vorhanden als `http://website/contact/`. Die E-Mail des Webmasters wird in der Datei `system/extensions/yellow-system.ini` festgelegt. Ganz oben auf einer Seite kannst du einen anderen `Author` und `Email` in den [Seiteneinstellungen](https://github.com/annaesvensson/yellow-core/tree/main/readme-de.md#einstellungen-seite) festlegen. Um ein Kontaktformular auf deiner Webseite anzuzeigen, benutze eine `[contact]`-Abkürzung.
+Das Kontaktformular ist auf deiner Webseite vorhanden als `http://website/contact/`. Die E-Mail des Webmasters wird in der Datei `system/extensions/yellow-system.ini` festgelegt. Ganz oben auf einer Seite kannst du einen anderen `Author` und `Email` in den [Seiteneinstellungen](https://github.com/annaesvensson/yellow-core/tree/main/readme-de.md#einstellungen-seite) festlegen. Um ein Kontaktformular auf deiner Webseite anzuzeigen, benutze eine `[contact]`-Abkürzung.
 
-## Wie man eine Kontaktseite beschränkt
+## Wie man ein Kontaktformular beschränkt
 
-Falls du nicht willst dass Nachrichten an beliebige Kontaktpersonen geschickt werden, beschränke E-Mails. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactEmailRestriction: 1`. Alle Kontaktnachrichten gehen dann direkt an den Webmaster und es nicht mehr möglich eine andere Kontaktperson in den [Seiteneinstellungen](https://github.com/annaesvensson/yellow-core/tree/main/readme-de.md#einstellungen-seite) ganz oben auf einer Seite festzulegen.
+Falls du nicht willst dass Nachrichten an beliebige Kontaktpersonen versendet werden, beschränke E-Mails. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactEmailRestriction: 1`. Alle Kontaktnachrichten gehen dann direkt an den Webmaster und es nicht mehr möglich eine andere Kontaktperson in den [Seiteneinstellungen](https://github.com/annaesvensson/yellow-core/tree/main/readme-de.md#einstellungen-seite) ganz oben auf einer Seite festzulegen.
 
-Falls du nicht willst dass Nachrichten mit Links verschickt werden, beschränke Links. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactLinkRestriction: 1`. Kontaktnachrichten dürfen dann keine anklickbare Links enthalten, das blockiert viele unerwünschte Nachrichten. Du kannst ausserdem Stichwörter im Spamfilter einstellen, netterweise schicken viele Spammer die selbe Nachricht mehrfach.
+Falls du nicht willst dass Nachrichten mit Links versendet werden, beschränke Links. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactLinkRestriction: 1`. Kontaktnachrichten dürfen dann keine anklickbare Links enthalten, das blockiert viele unerwünschte Nachrichten. Du kannst ausserdem Stichwörter im Spamfilter einstellen, netterweise schicken viele Spammer die selbe Nachricht mehrfach.
 
 ## Beispiele
 
