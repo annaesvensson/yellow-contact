@@ -1,4 +1,4 @@
-# Contact 0.9.3
+# Contact 1.0.1
 
 Kontaktformular zum Versenden von E-Mails. Entwickelt von Anna Svensson.
 
