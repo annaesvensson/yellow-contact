@@ -2,7 +2,7 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "1.0.1";
+    const VERSION = "1.0.2";
     public $yellow;         // access to API
     
     // Handle initialisation
@@ -12,6 +12,14 @@ class YellowContact {
         $this->yellow->system->setDefault("contactEmailRestriction", "0");
         $this->yellow->system->setDefault("contactLinkRestriction", "0");
         $this->yellow->system->setDefault("contactSpamFilter", "advert|promot|market|click here");
+        $this->yellow->language->setDefaults(array(
+           "Language: en",
+           "ContactHoneypot: Please leave this field blank:",
+           "Language: de",
+           "ContactHoneypot: Dieses Feld bitte leer lassen:",
+           "Language: sv",
+           "ContactHoneypot: Lämna det här fältet tomt:",
+        ));
     }
     
     // Handle page content element
@@ -24,6 +32,7 @@ class YellowContact {
             $output .= "<form class=\"contact-form\" action=\"".$page->base.$location."\" method=\"post\">\n";
             $output .= "<p class=\"contact-name\"><label for=\"name\">".$this->yellow->language->getTextHtml("contactName")."</label><br /><input type=\"text\" class=\"form-control\" name=\"name\" id=\"name\" value=\"\" /></p>\n";
             $output .= "<p class=\"contact-email\"><label for=\"email\">".$this->yellow->language->getTextHtml("contactEmail")."</label><br /><input type=\"text\" class=\"form-control\" name=\"email\" id=\"email\" value=\"\" /></p>\n";
+            $output .= "<p class=\"contact-website\" style=\"display:none !important;\" aria-hidden=\"true\"><label for=\"website_url\">".$this->yellow->language->getTextHtml("contactHoneypot")."</label><input type=\"text\" name=\"website_url\" id=\"website_url\" tabindex=\"-1\" autocomplete=\"off\" /></p>\n";
             $output .= "<p class=\"contact-message\"><label for=\"message\">".$this->yellow->language->getTextHtml("contactMessage")."</label><br /><textarea class=\"form-control\" name=\"message\" id=\"message\" rows=\"7\" cols=\"70\"></textarea></p>\n";
             $output .= "<p class=\"contact-consent\"><input type=\"checkbox\" name=\"consent\" value=\"consent\" id=\"consent\"> <label for=\"consent\">".$this->yellow->language->getTextHtml("contactConsent")."</label></p>\n";
             $output .= "<input type=\"hidden\" name=\"referer\" value=\"".$page->getUrl()."\" />\n";
@@ -61,7 +70,7 @@ class YellowContact {
     public function sendMail() {
         $status = "send";
         $senderName = trim(preg_replace("/[^\pL\d\-\. ]/u", "-", $this->yellow->page->getRequest("name")));
-        $honeypot = trim($this->yellow->page->getRequest("website_url"));
+        $honeypot = trim($this->yellow->page->getRequest("website_url")); // <-- NEU: Wert aus dem Formular auslesen
         $senderEmail = trim($this->yellow->page->getRequest("email"));
         $message = trim($this->yellow->page->getRequest("message"));
         $consent = trim($this->yellow->page->getRequest("consent"));
@@ -74,7 +83,7 @@ class YellowContact {
         $footer = $this->getMailFooter($referer);
         $userName = $this->yellow->system->get("author");
         $userEmail = $this->yellow->system->get("email");
-        if (!is_string_empty($honeypot)) return "done";
+        if (!is_string_empty($honeypot)) return "done"; // Fake-Erfolg für Bots
         if ($this->yellow->page->isExisting("author") && !$this->yellow->system->get("contactEmailRestriction")) {
             $userName = $this->yellow->page->get("author");
         }
