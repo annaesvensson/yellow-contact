@@ -61,6 +61,7 @@ class YellowContact {
     public function sendMail() {
         $status = "send";
         $senderName = trim(preg_replace("/[^\pL\d\-\. ]/u", "-", $this->yellow->page->getRequest("name")));
+        $honeypot = trim($this->yellow->page->getRequest("website_url"));
         $senderEmail = trim($this->yellow->page->getRequest("email"));
         $message = trim($this->yellow->page->getRequest("message"));
         $consent = trim($this->yellow->page->getRequest("consent"));
@@ -73,6 +74,7 @@ class YellowContact {
         $footer = $this->getMailFooter($referer);
         $userName = $this->yellow->system->get("author");
         $userEmail = $this->yellow->system->get("email");
+        if (!is_string_empty($honeypot)) return "done";
         if ($this->yellow->page->isExisting("author") && !$this->yellow->system->get("contactEmailRestriction")) {
             $userName = $this->yellow->page->get("author");
         }
