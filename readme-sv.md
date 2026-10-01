@@ -1,4 +1,4 @@
-# Contact 1.0.1
+# Contact 1.0.2
 
 Kontaktformulär för att skicka e-post. Utvecklad av Anna Svensson.
 
