@@ -10,36 +10,41 @@ Kontaktformular zum Versenden von E-Mails. Entwickelt von Anna Svensson.
 
 ## Wie man ein Kontaktformular benutzt
 
-Das Kontaktformular ist auf deiner Webseite vorhanden als `http://website/contact/`. Die E-Mail des Webmasters wird in der Datei `system/extensions/yellow-system.ini` festgelegt. Ganz oben auf einer Seite kannst du einen anderen `Author` und `Email` in den [Seiteneinstellungen](https://github.com/annaesvensson/yellow-core/tree/main/readme-de.md#einstellungen-seite) festlegen. Um ein Kontaktformular auf deiner Webseite anzuzeigen, benutze eine `[contact]`-Abkürzung.
+Das Kontaktformular ist auf deiner Webseite vorhanden als `http://website/contact/`. Die E-Mail des Webmasters wird in der Datei `system/extensions/yellow-system.ini` festgelegt. Ganz oben auf einer Seite kannst du einen anderen `Author` und `Email` in den [Seiteneinstellungen](https://github.com/annaesvensson/yellow-core/tree/main/readme-de.md#einstellungen-seite) festlegen.
 
 ## Wie man ein Kontaktformular beschränkt
 
 Falls du nicht willst dass Nachrichten an beliebige Kontaktpersonen versendet werden, beschränke E-Mails. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactEmailRestriction: 1`. Alle Kontaktnachrichten gehen dann direkt an den Webmaster und es nicht mehr möglich eine andere Kontaktperson in den [Seiteneinstellungen](https://github.com/annaesvensson/yellow-core/tree/main/readme-de.md#einstellungen-seite) ganz oben auf einer Seite festzulegen.
 
-Falls du nicht willst dass Nachrichten mit Links versendet werden, beschränke Links. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactLinkRestriction: 1`. Kontaktnachrichten dürfen dann keine anklickbare Links enthalten, das blockiert viele unerwünschte Nachrichten. Du kannst ausserdem Stichwörter im Spamfilter einstellen, netterweise schicken viele Spammer die selbe Nachricht mehrfach.
+## Wie man ein Kontaktformular vor Spam schützt
+
+Du kannst dein Kontaktformular vor Spam, Bots und Werbung schützen. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactLinkRestriction: 1`. Kontaktnachrichten dürfen dann keine anklickbare Links enthalten, das blockiert viele unerwünschte Nachrichten. Du kannst ausserdem Stichwörter im Spamfilter einstellen, netterweise schicken viele Spammer die selbe Nachricht mehrfach.
+
+Wir experimentieren mit zusätzlichen Mechanismen um Spam zu blockieren und freuen uns über dein Feedback.
 
 ## Beispiele
 
-Kontaktformular anzeigen:
-
-    [contact]
-    [contact /contact/]
-    [contact /de/contact/]
-
-Inhaltsdatei mit Kontaktformular:
+Inhaltsdatei fürs Kontaktformular
 
     ---
-    Title: Beispielseite
+    Title: Kontaktiere einen Menschen
+    TitleSlug: Contact
+    Layout: contact
+    Status: unlisted
+    --- 
+
+Inhaltsdatei fürs Kontaktformular mit einer anderen Kontaktperson:
+
     ---
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut 
-    labore et dolore magna pizza. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
-    nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit 
-    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt 
-    in culpa qui officia deserunt mollit anim id est laborum.
+    Title: Kontaktiere einen Menschen
+    TitleSlug: Contact
+    Layout: contact
+    Status: unlisted
+    Author: Anna Svensson
+    Email: anna@svensson.com
+    ---
 
-    [contact]
-
-Inhaltsdatei mit Link zur Kontaktseite:
+Inhaltsdatei mit Link zum Kontaktformular:
 
     ---
     Title: Beispielseite
@@ -51,17 +56,6 @@ Inhaltsdatei mit Link zur Kontaktseite:
     in culpa qui officia deserunt mollit anim id est laborum.
     
     [Kontaktiere einen Menschen](/contact/).
-
-Inhaltsdatei mit einer anderen Kontaktperson auf der Kontaktseite:
-
-     ---
-     Title: Kontaktiere einen Menschen
-     TitleSlug: Contact
-     Layout: contact
-     Status: unlisted
-     Author: Anna Svensson
-     Email: anna@svensson.com
-     ---
 
 Verschiedene Spamfilter in den Einstellungen festlegen:
 
