@@ -18,7 +18,7 @@ Falls du nicht willst dass Nachrichten an beliebige Kontaktpersonen gesendet wer
 
 ## Wie man ein Kontaktformular vor Spam schützt
 
-Du kannst dein Kontaktformular vor Spam, Bots und Werbung schützen. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactLinkRestriction: 1`. Nachrichten dürfen dann keine anklickbare Links enthalten, das blockiert viele unerwünschte Nachrichten. Du kannst ausserdem Stichwörter im Spamfilter einstellen, netterweise schicken viele Spammer die selbe Nachricht mehrfach.
+Du kannst dein Kontaktformular vor Spam, Werbung und menschlicher Gier schützen. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactLinkRestriction: 1`. Nachrichten dürfen dann keine anklickbare Links enthalten, das blockiert viele unerwünschte Nachrichten. Du kannst ausserdem Stichwörter im Spamfilter einstellen, netterweise schicken viele Spammer die selbe Nachricht mehrfach.
 
 Wir experimentieren mit zusätzlichen Schutzmechanismen und freuen uns über dein Feedback.
 
@@ -60,8 +60,8 @@ Inhaltsdatei mit Link zum Kontaktformular:
 Verschiedene Spamfilter in den Einstellungen festlegen:
 
     ContactSpamFilter: advert|promot|market|click here
-    ContactSpamFilter: advert|buy|likes|followers|subscribers
-    ContactSpamFilter: advert|kaufe|anbiete|rabatt|suchmaschinenoptimierung
+    ContactSpamFilter: advert|buy|tokens|likes|followers|subscribers
+    ContactSpamFilter: werbung|intelligenz|suchmaschine|optimierung
 
 ## Einstellungen
 

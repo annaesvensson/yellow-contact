@@ -18,7 +18,7 @@ If you don't want that messages are sent to any contact person, then restrict em
 
 ## How to protect a contact form from spam
 
-You can protect your contact form from spam, bots and advertising. Open file `system/extensions/yellow-system.ini` and change `ContactLinkRestriction: 1`. Messages must not contain clickable links, this blocks many unwanted messages. You can also configure keywords in the spam filter, fortunately, many spammers send the same message multiple times.
+You can protect your contact form from spam, advertising and human greed. Open file `system/extensions/yellow-system.ini` and change `ContactLinkRestriction: 1`. Messages must not contain clickable links, this blocks many unwanted messages. You can also configure keywords in the spam filter, fortunately, many spammers send the same message multiple times.
 
 We are experimenting with additional protections mechanisms and your feedback is very welcome.
 
@@ -60,8 +60,8 @@ Content file with link to contact form:
 Configuring different spam filters in the settings:
 
     ContactSpamFilter: advert|promot|market|click here
-    ContactSpamFilter: advert|buy|likes|followers|subscribers
-    ContactSpamFilter: advert|buy|sell|discount|search engine optimisation
+    ContactSpamFilter: advert|buy|tokens|likes|followers|subscribers
+    ContactSpamFilter: advert|intelligence|search engine|optimisation
 
 ## Settings
 
