@@ -10,17 +10,17 @@ Kontaktformulär för att skicka e-post. Utvecklad av Anna Svensson.
 
 ## Hur man använder ett kontaktformulär
 
-Kontaktformuläret finns tillgänglig på din webbplats som `http://website/contact/`. Webmasterns email definieras i filen `system/extensions/yellow-system.ini`. Du kan ställa in en annan `Author` and `Email` i [sidinställningar](https://github.com/annaesvensson/yellow-core/tree/main/readme-sv.md#inställningar-page) högst upp på en sida.
+Kontaktformuläret finns tillgänglig på din webbplats som `http://website/contact/`. Vanligtvis skickas meddelanden till webmastern. Webmasterns email definieras i filen `system/extensions/yellow-system.ini`. Du kan ställa in en annan `Author` and `Email` i [sidinställningar](https://github.com/annaesvensson/yellow-core/tree/main/readme-sv.md#inställningar-page) högst upp på en sida.
 
 ## Hur man begränsar ett kontaktformulär
 
-Om du inte vill att meddelanden ska skickas till vilken kontaktperson som helst begränsar du email. Öppna filen `system/extensions/yellow-system.ini` och ändra `ContactEmailRestriction: 1`. Alla kontaktmeddelanden går direkt till webmastern och det är inte längre möjligt att ställa in en annan kontaktperson i [sidinställningar](https://github.com/annaesvensson/yellow-core/tree/main/readme-sv.md#inställningar-page) högst upp på en sida.
+Om du inte vill att meddelanden skickas till vilken kontaktperson som helst begränsar du email. Öppna filen `system/extensions/yellow-system.ini` och ändra `ContactEmailRestriction: 1`. Alla meddelanden går direkt till webmastern och det är inte längre möjligt att ställa in en annan kontaktperson i [sidinställningar](https://github.com/annaesvensson/yellow-core/tree/main/readme-sv.md#inställningar-page) högst upp på en sida.
 
 ## Hur man skyddar ett kontaktformulär från skräppost
 
-Du kan skydda ditt kontaktformulär från skräppost, bottar och reklam. Öppna filen `system/extensions/yellow-system.ini` och ändra `ContactLinkRestriction: 1`. Kontaktmeddelanden får då inte innehålla klickbara länkar, detta blockerar många oönskade meddelanden. Du kan också ställa in nyckelord i skräppostfiltret, lyckligtvis skickar många spammare samma meddelande flera gånger.
+Du kan skydda ditt kontaktformulär från skräppost, bottar och reklam. Öppna filen `system/extensions/yellow-system.ini` och ändra `ContactLinkRestriction: 1`. Meddelanden får då inte innehålla klickbara länkar, detta blockerar många oönskade meddelanden. Du kan också ställa in nyckelord i skräppostfiltret, lyckligtvis skickar många spammare samma meddelande flera gånger.
 
-Vi experimenterar med ytterligare mekanismer för att blockera skräppost och vi tar gärna emot dina synpunkter.
+Vi experimenterar med ytterligare skyddsmekanismert och vi tar gärna emot dina synpunkter.
 
 ## Exempel
 

@@ -10,17 +10,17 @@ Contact form for sending emails. Developed by Anna Svensson.
 
 ## How to use a contact form
 
-The contact form is available on your website as `http://website/contact/`. The webmaster's email is defined in file `system/extensions/yellow-system.ini`. You can set a different `Author` and `Email` in the [page settings](https://github.com/annaesvensson/yellow-core#settings-page) at the top of a page.
+The contact form is available on your website as `http://website/contact/`. Usually all messages entered in the contact form are sent to the webmaster. The webmaster's email is defined in file `system/extensions/yellow-system.ini`. You can set a different `Author` and `Email` in the [page settings](https://github.com/annaesvensson/yellow-core#settings-page) at the top of a page.
 
 ## How to restrict a contact form
 
-If you don't want that messages are sent to any contact person, then restrict emails. Open file `system/extensions/yellow-system.ini` and change `ContactEmailRestriction: 1`. All contact messages go directly to the webmaster and it's no longer possible to set a different contact person in the [page settings](https://github.com/annaesvensson/yellow-core#settings-page) at the top of a page.
+If you don't want that messages are sent to any contact person, then restrict emails. Open file `system/extensions/yellow-system.ini` and change `ContactEmailRestriction: 1`. All messages go directly to the webmaster and it's no longer possible to set a different contact person in the [page settings](https://github.com/annaesvensson/yellow-core#settings-page) at the top of a page.
 
 ## How to protect a contact form from spam
 
-You can protect your contact form from spam, bots and advertising. Open file `system/extensions/yellow-system.ini` and change `ContactLinkRestriction: 1`. Contact messages must not contain clickable links, this blocks many unwanted messages. You can also configure keywords in the spam filter, fortunately, many spammers send the same message multiple times.
+You can protect your contact form from spam, bots and advertising. Open file `system/extensions/yellow-system.ini` and change `ContactLinkRestriction: 1`. Messages must not contain clickable links, this blocks many unwanted messages. You can also configure keywords in the spam filter, fortunately, many spammers send the same message multiple times.
 
-We are experimenting with additional mechanisms to block spam and your feedback is very welcome.
+We are experimenting with additional protections mechanisms and your feedback is very welcome.
 
 ## Examples
 
