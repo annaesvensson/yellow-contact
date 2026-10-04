@@ -1,4 +1,4 @@
-# Contact 1.0.1
+# Contact 1.0.2
 
 Kontaktformular zum Versenden von E-Mails. Entwickelt von Anna Svensson.
 
@@ -10,7 +10,7 @@ Kontaktformular zum Versenden von E-Mails. Entwickelt von Anna Svensson.
 
 ## Wie man ein Kontaktformular benutzt
 
-Das Kontaktformular ist auf deiner Webseite vorhanden als `http://website/contact/`. In der Regel werden alle Nachrichten die im Kontaktformular eingegeben werden an den Webmaster gesendet. Die E-Mail des Webmasters wird in der Datei `system/extensions/yellow-system.ini` festgelegt. Ganz oben auf einer Seite kannst du einen anderen `Author` und `Email` in den [Seiteneinstellungen](https://github.com/annaesvensson/yellow-core/tree/main/readme-de.md#einstellungen-seite) festlegen.
+Das Kontaktformular ist auf deiner Webseite vorhanden als `http://website/contact/`. In der Regel werden Nachrichten die im Kontaktformular eingegeben werden an den Webmaster gesendet. Die E-Mail des Webmasters wird in der Datei `system/extensions/yellow-system.ini` festgelegt. Ganz oben auf einer Seite kannst du einen anderen `Author` und `Email` in den [Seiteneinstellungen](https://github.com/annaesvensson/yellow-core/tree/main/readme-de.md#einstellungen-seite) festlegen.
 
 ## Wie man ein Kontaktformular beschränkt
 
@@ -70,7 +70,6 @@ Die folgenden Einstellungen können in der Datei `system/extensions/yellow-syste
 `Author` = Name des Webmasters  
 `Email` = E-Mail des Webmasters  
 `From` = E-Mail für ausgehende Nachrichten  
-`ContactLocation` = Ort der Kontaktseite  
 `ContactEmailRestriction` = E-Mail-Beschränkung aktivieren, 1 oder 0  
 `ContactLinkRestriction` = Linkbeschränkung aktivieren, 1 oder 0  
 `ContactSpamFilter` = Spamfilter als regulärer Ausdruck, `none` um zu deaktivieren  

@@ -1,4 +1,4 @@
-# Contact 1.0.1
+# Contact 1.0.2
 
 Contact form for sending emails. Developed by Anna Svensson.
 
@@ -10,7 +10,7 @@ Contact form for sending emails. Developed by Anna Svensson.
 
 ## How to use a contact form
 
-The contact form is available on your website as `http://website/contact/`. Usually all messages entered in the contact form are sent to the webmaster. The webmaster's email is defined in file `system/extensions/yellow-system.ini`. You can set a different `Author` and `Email` in the [page settings](https://github.com/annaesvensson/yellow-core#settings-page) at the top of a page.
+The contact form is available on your website as `http://website/contact/`. Usually messages entered in the contact form are sent to the webmaster. The webmaster's email is defined in file `system/extensions/yellow-system.ini`. You can set a different `Author` and `Email` in the [page settings](https://github.com/annaesvensson/yellow-core#settings-page) at the top of a page.
 
 ## How to restrict a contact form
 
@@ -70,7 +70,6 @@ The following settings can be configured in file `system/extensions/yellow-syste
 `Author` = name of the webmaster  
 `Email` = email of the webmaster  
 `From` = email for outgoing messages  
-`ContactLocation` = contact page location  
 `ContactEmailRestriction` = enable email restriction, 1 or 0  
 `ContactLinkRestriction` = enable link restriction, 1 or 0  
 `ContactSpamFilter` = spam filter as regular expression, `none` to disable  

@@ -1,4 +1,4 @@
-# Contact 1.0.1
+# Contact 1.0.2
 
 Kontaktformulär för att skicka e-post. Utvecklad av Anna Svensson.
 
@@ -70,7 +70,6 @@ Följande inställningar kan konfigureras i filen `system/extensions/yellow-syst
 `Author` = webmasterns namn  
 `Email` = webmasterns email  
 `From` = email för utgående meddelanden  
-`ContactLocation` = plats för kontaktsidan  
 `ContactEmailRestriction` = aktivera emailbegränsning, 1 eller 0  
 `ContactLinkRestriction` = aktivera länkbegränsning, 1 eller 0  
 `ContactSpamFilter` = skräppostfilter som reguljära uttryck, `none` för att inaktivera  
