@@ -2,7 +2,7 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "1.0.2";
+    const VERSION = "1.0.3";
     public $yellow;         // access to API
     
     // Handle initialisation
@@ -24,7 +24,7 @@ class YellowContact {
             }
             if ($page->getRequest("status")=="send") {
                 list($status, $data) = $this->validateInputData($page);
-                if ($status=="send") $status = $this->sendMail($data);
+                if ($status=="ok") $status = $this->sendMail($data);
                 if ($status=="error") $page->error(500, "Can't send email message!");
                 $page->setHeader("Last-Modified", $this->yellow->toolbox->getHttpDateFormatted(time()));
                 $page->setHeader("Cache-Control", "no-cache, no-store");
@@ -37,7 +37,7 @@ class YellowContact {
     
     // Validate input data
     public function validateInputData($page) {
-        $status = "send";
+        $status = "ok";
         $data = array(
             "senderName" => trim(preg_replace("/[^\pL\d\-\. ]/u", "-", $page->getRequest("name"))),
             "senderEmail" => trim($page->getRequest("email")),
@@ -67,7 +67,7 @@ class YellowContact {
         }
         if (!is_string_empty($data["senderEmail"]) && !filter_var($data["senderEmail"], FILTER_VALIDATE_EMAIL)) $status = "invalid";
         if (is_string_empty($data["userEmail"]) || !filter_var($data["userEmail"], FILTER_VALIDATE_EMAIL)) $status = "unavailable";
-        if ($status=="send") $status = $this->yellow->toolbox->validate("contact", $status, $data);
+        if ($status=="ok") $status = $this->yellow->toolbox->validate("contact", $data);
         return array($status, $data);
     }
     
