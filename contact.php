@@ -9,7 +9,9 @@ class YellowContact {
     public function onLoad($yellow) {
         $this->yellow = $yellow;
         $this->yellow->system->setDefault("contactEmailRestriction", "0");
-        $this->yellow->system->setDefault("contactLinkRestriction", "0");
+        $this->yellow->system->setDefault("contactLinkProtection", "0");
+        $this->yellow->system->setDefault("contactTimerProtection", "1");
+        $this->yellow->system->setDefault("contactBotProtection", "1");
         $this->yellow->system->setDefault("contactSpamFilter", "advert|promot|market|click here");
     }
     
@@ -22,9 +24,15 @@ class YellowContact {
                 $page->setHeader("Last-Modified", $this->yellow->toolbox->getHttpDateFormatted(time()));
                 $page->setHeader("Cache-Control", "no-cache, no-store");
             }
+            if (!$page->isRequest("timer")) {
+                $page->setRequest("timer", "192".substru(time(),-5));
+                $page->setHeader("Last-Modified", $this->yellow->toolbox->getHttpDateFormatted(time()));
+                $page->setHeader("Cache-Control", "no-cache, no-store");
+            }
             if ($page->getRequest("status")=="send") {
                 list($status, $data) = $this->validateInputData($page);
                 if ($status=="ok") $status = $this->sendMail($data);
+                if ($status=="bot") $page->error(444);
                 if ($status=="error") $page->error(500, "Can't send email message!");
                 $page->setHeader("Last-Modified", $this->yellow->toolbox->getHttpDateFormatted(time()));
                 $page->setHeader("Cache-Control", "no-cache, no-store");
@@ -35,6 +43,16 @@ class YellowContact {
         }
     }
     
+    // Handle page extra data
+    public function onParsePageExtra($page, $name) {
+        $output = null;
+        if ($name=="header") {
+            $assetLocation = $this->yellow->system->get("coreServerBase").$this->yellow->system->get("coreAssetLocation");
+            $output = "<script defer=\"defer\" src=\"{$assetLocation}contact.js\"></script>\n";
+        }
+        return $output;
+    }
+
     // Validate input data
     public function validateInputData($page) {
         $status = "ok";
@@ -44,10 +62,13 @@ class YellowContact {
             "message" => trim($page->getRequest("message")),
             "consent" => trim($page->getRequest("consent")),
             "referer" => trim($page->getRequest("referer")),
+            "timer" => trim($page->getRequest("timer")),
+            "token" => trim($page->getRequest("token")),
             "subject" => $page->get("title"),
             "userName" => $this->yellow->system->get("author"),
             "userEmail" => $this->yellow->system->get("email"),
             "spam" => false);
+        if (is_string_empty($data["token"])) $data["token"] = "none";
         if ($page->isExisting("author") && !$this->yellow->system->get("contactEmailRestriction")) {
             $data["userName"] = $page->get("author");
         }
@@ -58,15 +79,21 @@ class YellowContact {
             $regex = "/".$this->yellow->system->get("contactSpamFilter")."/i";
             $data["spam"] = preg_match($regex, $data["message"]);
         }
-        if ($this->yellow->system->get("contactLinkRestriction") && $this->checkClickable($data["message"])) {
+        if ($this->yellow->system->get("contactLinkProtection") && $this->checkClickableLink($data["message"])) {
             $status = "review";
         }
-        if (is_string_empty($data["senderName"]) || is_string_empty($data["senderEmail"]) ||
-            is_string_empty($data["message"]) || is_string_empty($data["consent"])) {
+        if ($this->yellow->system->get("contactTimerProtection") && !$this->checkTimeElapsed($data["timer"])) {
             $status = "incomplete";
         }
         if (!is_string_empty($data["senderEmail"]) && !filter_var($data["senderEmail"], FILTER_VALIDATE_EMAIL)) $status = "invalid";
         if (is_string_empty($data["userEmail"]) || !filter_var($data["userEmail"], FILTER_VALIDATE_EMAIL)) $status = "unavailable";
+        if (is_string_empty($data["senderName"]) || is_string_empty($data["senderEmail"]) ||
+            is_string_empty($data["message"]) || is_string_empty($data["consent"])) {
+            $status = "incomplete";
+        }
+        if ($this->yellow->system->get("contactBotProtection") && !$this->checkBrowserToken($data["token"])) {
+            $status = "bot";
+        }
         if ($status=="ok") $status = $this->yellow->toolbox->validate("contact", $data);
         return array($status, $data);
     }
@@ -90,6 +117,8 @@ class YellowContact {
             "Date" => date(DATE_RFC2822),
             "Mime-Version" => "1.0",
             "Content-Type" => "text/plain; charset=utf-8",
+            "X-Time-Elapsed" => $this->getTimeElapsed($data["timer"])." second(s)",
+            "X-Browser-Token" => $data["token"],
             "X-Referer-Url" => $data["referer"],
             "X-Request-Url" => $this->yellow->page->getUrl());
         if ($data["spam"]) {
@@ -119,6 +148,11 @@ class YellowContact {
         return $footer;
     }
     
+    // Return elapsed time in seconds
+    public function getTimeElapsed($timer) {
+        return substru($timer, 0, 3)!="192" ? 0 : abs(substru(time(),-5) - substru($timer, 3, 5));
+    }
+    
     // Return title for local page
     public function findTitle($url, $titleDefault) {
         $titleFound = $titleDefault;
@@ -134,8 +168,19 @@ class YellowContact {
         return $titleFound;
     }
 
+    // Check browser token
+    public function checkBrowserToken($token) {
+        return strlenu($token)==24;
+    }
+    
+    // Check if time is within resonable limits
+    public function checkTimeElapsed($timer) {
+        $seconds = $this->getTimeElapsed($timer);
+        return $seconds>=10 && $seconds<=43200;
+    }
+
     // Check if text contains clickable links
-    public function checkClickable($text) {
+    public function checkClickableLink($text) {
         $found = false;
         foreach (preg_split("/\s+/", $text) as $token) {
             if (preg_match("/([\w\-\.]{2,}\.[\w]{2,})/", $token)) $found = true;
