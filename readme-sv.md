@@ -70,7 +70,7 @@ Följande inställningar kan konfigureras i filen `system/extensions/yellow-syst
 `From` = email för utgående meddelanden  
 `ContactEmailRestriction` = aktivera emailbegränsning, 1 eller 0  
 `ContactLinkProtection` = aktivera skydd mot klickbara länkar, 1 eller 0  
-`ContactTimeProtection` = aktivera skydd mot snabb sändning, 1 eller 0  
+`ContactTimerProtection` = aktivera skydd mot snabb sändning, 1 eller 0  
 `ContactBotProtection` = aktivera skydd mot dåliga botar, 1 eller 0  
 `ContactSpamFilter` = skräppostfilter som reguljära uttryck, `none` för att inaktivera  
 

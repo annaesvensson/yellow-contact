@@ -70,7 +70,7 @@ The following settings can be configured in file `system/extensions/yellow-syste
 `From` = email for outgoing messages  
 `ContactEmailRestriction` = enable email restriction, 1 or 0  
 `ContactLinkProtection` = enable protection against clickable links, 1 or 0  
-`ContactTimeProtection` = enable protection against sending quickly, 1 or 0  
+`ContactTimerProtection` = enable protection against sending quickly, 1 or 0  
 `ContactBotProtection` = enable protection against bad bots, 1 or 0  
 `ContactSpamFilter` = spam filter as regular expression, `none` to disable  
 
