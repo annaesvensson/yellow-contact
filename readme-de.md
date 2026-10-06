@@ -1,4 +1,4 @@
-# Contact 1.0.3
+# Contact 1.0.4
 
 Kontaktformular zum Versenden von E-Mails. Entwickelt von Anna Svensson.
 
@@ -14,13 +14,11 @@ Das Kontaktformular ist auf deiner Webseite vorhanden als `http://website/contac
 
 ## Wie man ein Kontaktformular beschränkt
 
-Falls du nicht willst dass Nachrichten an beliebige Kontaktpersonen gesendet werden, beschränke E-Mails. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactEmailRestriction: 1`. Alle Nachrichten gehen dann direkt an den Webmaster und es nicht mehr möglich eine andere Kontaktperson in den [Seiteneinstellungen](https://github.com/annaesvensson/yellow-core/tree/main/readme-de.md#einstellungen-seite) ganz oben auf einer Seite festzulegen.
+Falls du nicht willst dass Nachrichten an beliebige Kontaktpersonen gesendet werden, beschränke E-Mails. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactEmailRestriction: 1`. Alle Nachrichten gehen dann direkt an den Webmaster und es nicht mehr möglich eine andere E-Mail in den [Seiteneinstellungen](https://github.com/annaesvensson/yellow-core/tree/main/readme-de.md#einstellungen-seite) ganz oben auf einer Seite festzulegen.
 
-## Wie man ein Kontaktformular vor Spam schützt
+## Wie man ein Kontaktformular vor Werbung schützt
 
-Du kannst dein Kontaktformular vor Spam, Werbung und menschlicher Gier schützen. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactLinkRestriction: 1`. Nachrichten dürfen dann keine anklickbare Links enthalten, das blockiert viele unerwünschte Nachrichten. Du kannst ausserdem Stichwörter im Spamfilter einstellen, netterweise schicken viele Spammer die selbe Nachricht mehrfach.
-
-Wir experimentieren mit zusätzlichen Schutzmechanismen und freuen uns über dein Feedback.
+Du kannst dein Kontaktformular vor Werbung, Spam und unerwünschten Nachrichten schützen. Die wichtigsten Schutzmechanismen sind standardmässig aktiviert, du kannst dein Kontaktformular bei Bedarf noch mehr schützen. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactLinkProtection: 1`. Nachrichten dürfen dann keine anklickbaren Links mehr enthalten, das blockiert viele unerwünschte Nachrichten. Du kannst ausserdem Stichwörter im Spamfilter einstellen, netterweise schicken viele Spammer die selbe Nachricht mehrfach.
 
 ## Beispiele
 
@@ -71,7 +69,9 @@ Die folgenden Einstellungen können in der Datei `system/extensions/yellow-syste
 `Email` = E-Mail des Webmasters  
 `From` = E-Mail für ausgehende Nachrichten  
 `ContactEmailRestriction` = E-Mail-Beschränkung aktivieren, 1 oder 0  
-`ContactLinkRestriction` = Linkbeschränkung aktivieren, 1 oder 0  
+`ContactLinkProtection` = Schutz vor anklickbaren Links aktivieren, 1 oder 0  
+`ContactTimeProtection` = Schutz vor schnellem Absenden aktivieren, 1 oder 0  
+`ContactBotProtection` = Schutz vor schlechten Bots aktivieren, 1 oder 0  
 `ContactSpamFilter` = Spamfilter als regulärer Ausdruck, `none` um zu deaktivieren  
 
 Die folgenden Dateien können angepasst werden:

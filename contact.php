@@ -2,7 +2,7 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "1.0.3";
+    const VERSION = "1.0.4";
     public $yellow;         // access to API
     
     // Handle initialisation

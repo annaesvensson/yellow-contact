@@ -10,6 +10,7 @@
 <p class="contact-message"><label for="message"><?php echo $this->yellow->language->getTextHtml("contactMessage") ?></label><br /><textarea class="form-control" name="message" id="message" rows="7" cols="70"><?php echo $this->yellow->page->getRequestHtml("message") ?></textarea></p>
 <p class="contact-consent"><input type="checkbox" name="consent" value="consent" id="consent"<?php echo $this->yellow->page->isRequest("consent") ? " checked=\"checked\"" : "" ?>> <label for="consent"><?php echo $this->yellow->language->getTextHtml("contactConsent") ?></label></p>
 <input type="hidden" name="referer" value="<?php echo $this->yellow->page->getRequestHtml("referer") ?>" />
+<input type="hidden" name="timer" value="<?php echo $this->yellow->page->getRequestHtml("timer") ?>" />
 <input type="hidden" name="status" value="send" />
 <input type="submit" value="<?php echo $this->yellow->language->getTextHtml("contactButton") ?>" class="btn contact-btn" />
 </form>
