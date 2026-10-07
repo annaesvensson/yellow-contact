@@ -1,4 +1,4 @@
-# Contact 1.0.5
+# Contact 1.0.6
 
 Contact form for sending emails. Developed by Anna Svensson.
 
@@ -18,7 +18,7 @@ If you don't want that messages are sent to any contact person, then restrict th
 
 ## How to protect a contact form from advertising
 
-You can protect your contact form from advertising, spam and unwanted messages. The most important protection mechanisms are activated by default. Further protection mechanisms can be activated if necessary. Open file `system/extensions/yellow-system.ini` and change `ContactLinkProtection: 1`. Messages must then no longer contain clickable links, this blocks many unwanted messages, but still allows normal messages and feedback to pass through. You can also configure keywords in the spam filter, fortunately, many spammers send the same message multiple times.
+You can protect your contact form from advertising, spam and unwanted messages. The most important protection mechanisms are activated by default. Further protection mechanisms can be activated if necessary. Open file `system/extensions/yellow-system.ini` and change `ContactLinkProtection: 1`. Messages must then no longer contain clickable links, this blocks many unwanted messages, but still allows normal messages to pass through. You can also configure keywords in the spam filter, fortunately, many spammers send the same message multiple times.
 
 ## Examples
 

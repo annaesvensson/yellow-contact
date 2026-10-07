@@ -1,4 +1,4 @@
-# Contact 1.0.5
+# Contact 1.0.6
 
 Kontaktformular zum Versenden von E-Mails. Entwickelt von Anna Svensson.
 
@@ -18,7 +18,7 @@ Falls du nicht willst dass Nachrichten an beliebige Kontaktpersonen gesendet wer
 
 ## Wie man ein Kontaktformular vor Werbung schützt
 
-Du kannst dein Kontaktformular vor Werbung, Spam und unerwünschten Nachrichten schützen. Die wichtigsten Schutzmechanismen sind standardmässig aktiviert. Weitere Schutzmechanismen lassen sich bei Bedarf aktivieren. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactLinkProtection: 1`. Nachrichten dürfen dann keine anklickbaren Links mehr enthalten, das blockiert viele unerwünschte Nachrichten, aber lässt normale Nachrichten und Rückmeldungen weiterhin durch. Du kannst ausserdem Stichwörter im Spamfilter einstellen, netterweise schicken viele Spammer die selbe Nachricht mehrfach.
+Du kannst dein Kontaktformular vor Werbung, Spam und unerwünschten Nachrichten schützen. Die wichtigsten Schutzmechanismen sind standardmässig aktiviert. Weitere Schutzmechanismen lassen sich bei Bedarf aktivieren. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactLinkProtection: 1`. Nachrichten dürfen dann keine anklickbaren Links mehr enthalten, das blockiert viele unerwünschte Nachrichten, aber lässt normale Nachrichten weiterhin durch. Du kannst ausserdem Stichwörter im Spamfilter einstellen, netterweise schicken viele Spammer die selbe Nachricht mehrfach.
 
 ## Beispiele
 

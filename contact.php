@@ -2,7 +2,7 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "1.0.5";
+    const VERSION = "1.0.6";
     public $yellow;         // access to API
     
     // Handle initialisation
@@ -43,8 +43,6 @@ class YellowContact {
             if ($page->getRequest("status")=="send") {
                 list($status, $data) = $this->validateInputData($page);
                 if ($status=="ok") $status = $this->sendMail($data);
-                if ($status=="bot") $page->error(444);
-                if ($status=="error") $page->error(500, "Can't send email message!");
                 $page->setHeader("Last-Modified", $this->yellow->toolbox->getHttpDateFormatted(time()));
                 $page->setHeader("Cache-Control", "no-cache, no-store");
                 $page->set("status", $status);
@@ -102,10 +100,8 @@ class YellowContact {
             is_string_empty($data["message"]) || is_string_empty($data["consent"])) {
             $status = "incomplete";
         }
-        if ($this->yellow->system->get("contactMailDailyLimit")!=0 && !$this->checkDailyLimit()) {
-            $status = "inactive";
-        }
         if ($this->yellow->system->get("contactBotProtection") && !$this->checkBrowserToken($data["token"])) {
+            $page->error(444);
             $status = "bot";
         }
         if ($status=="ok") $status = $this->yellow->toolbox->validate("contact", $data);
@@ -114,6 +110,7 @@ class YellowContact {
     
     // Send email message to contact person
     public function sendMail($data) {
+        $status = "ok";
         $senderName = $data["senderName"];
         $senderEmail = $data["senderEmail"];
         $userName = $data["userName"];
@@ -141,18 +138,18 @@ class YellowContact {
             $mailHeaders["X-Spam-Status"] = "Yes, score=1";
         }
         $mailMessage = "$header\r\n\r\n$message\r\n-- \r\n$footer";
-        $status = $this->yellow->toolbox->mail("contact", $mailHeaders, $mailMessage) ? "done" : "error";
-        $this->writeMailDelivery($status, "Send email message from $senderName <$senderEmail> to $userName <$userEmail>");
-        return $status;
-    }
-    
-    // Write sucessful email delivery to file
-    public function writeMailDelivery($status, $message) {
-        if ($status=="done") {
+        $mailDelivery = date("Y-m-d H:i:s")." info Send email message from $senderName <$senderEmail> to $userName <$userEmail>\n";
+        $status = $this->getMailDeliveryStatus();
+        if($status=="ok") {
             $fileName = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-delivery.ini";
-            $line = date("Y-m-d H:i:s")." info ".trim($message)."\n";
-            $this->yellow->toolbox->appendFile($fileName, $line);
+            $status = $this->yellow->toolbox->appendFile($fileName, $mailDelivery) ? "ok" : "error:";
+            if ($status=="error") $page->error(500, "Can't write file '$fileName'!");
         }
+        if ($status=="ok") {
+            $status = $this->yellow->toolbox->mail("contact", $mailHeaders, $mailMessage) ? "done" : "error";
+            if ($status=="error") $page->error(500, "Can't send email message!");
+        }
+        return $status;
     }
 
     // Return email header
@@ -169,17 +166,24 @@ class YellowContact {
         $footer = $this->yellow->language->getText("contactMailFooter");
         $footer = str_replace("\\n", "\r\n", $footer);
         $footer = preg_replace("/@sitename/i", $this->yellow->system->get("sitename"), $footer);
-        $footer = preg_replace("/@title/i", $this->findTitle($url, $titleDefault), $footer);
+        $footer = preg_replace("/@title/i", $this->getPageTitle($url, $titleDefault), $footer);
         return $footer;
     }
     
-    // Return elapsed time in seconds
-    public function getTimeElapsed($timer) {
-        return substru($timer, 0, 3)!="192" ? 0 : abs(substru(time(),-5) - substru($timer, 3, 5));
+    // Return mail delivery status, stay below daily limit
+    public function getMailDeliveryStatus() {
+        $status = "ok";
+        if ($this->yellow->system->get("contactMailDailyLimit")!=0) {
+            $fileName = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-delivery.ini";
+            $fileData = $this->yellow->toolbox->readFile($fileName);
+            $lines = $this->yellow->toolbox->getTextLines($fileData);
+            if (count($lines)>=$this->yellow->system->get("contactMailDailyLimit")) $status = "inactive";
+        }
+        return $status;
     }
     
-    // Return title for local page
-    public function findTitle($url, $titleDefault) {
+    // Return page title for URL
+    public function getPageTitle($url, $titleDefault) {
         $titleFound = $titleDefault;
         $serverUrl = $this->yellow->lookup->normaliseUrl(
             $this->yellow->system->get("coreServerScheme"),
@@ -192,18 +196,15 @@ class YellowContact {
         }
         return $titleFound;
     }
+    
+    // Return elapsed time in seconds
+    public function getTimeElapsed($timer) {
+        return substru($timer, 0, 3)!="192" ? 0 : abs(substru(time(),-5) - substru($timer, 3, 5));
+    }
 
     // Check browser token
     public function checkBrowserToken($token) {
         return strlenu($token)==24;
-    }
-    
-    // Check if mail delivery has reached daily limit
-    public function checkDailyLimit() {
-        $fileName = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-delivery.ini";
-        $fileData = $this->yellow->toolbox->readFile($fileName);
-        $lines = $this->yellow->toolbox->getTextLines($fileData);
-        return count($lines)<$this->yellow->system->get("contactMailDailyLimit");
     }
     
     // Check if time is within resonable limits
