@@ -2,17 +2,28 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "1.0.4";
+    const VERSION = "1.0.5";
     public $yellow;         // access to API
     
     // Handle initialisation
     public function onLoad($yellow) {
         $this->yellow = $yellow;
-        $this->yellow->system->setDefault("contactEmailRestriction", "0");
+        $this->yellow->system->setDefault("contactMailDailyLimit", "100");
+        $this->yellow->system->setDefault("contactFormRestriction", "0");
         $this->yellow->system->setDefault("contactLinkProtection", "0");
         $this->yellow->system->setDefault("contactTimerProtection", "1");
         $this->yellow->system->setDefault("contactBotProtection", "1");
         $this->yellow->system->setDefault("contactSpamFilter", "advert|promot|market|click here");
+    }
+    
+    // Handle update
+    public function onUpdate($action) {
+        if ($action=="clean" || $action=="daily" || $action=="uninstall") {
+            $fileName = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-delivery.ini";
+            if (is_file($fileName) && !$this->yellow->toolbox->deleteFile($fileName)) {
+                $this->yellow->toolbox->log("error", "Can't delete file '$fileName'!");
+            }
+        }
     }
     
     // Handle page layout
@@ -69,10 +80,10 @@ class YellowContact {
             "userEmail" => $this->yellow->system->get("email"),
             "spam" => false);
         if (is_string_empty($data["token"])) $data["token"] = "none";
-        if ($page->isExisting("author") && !$this->yellow->system->get("contactEmailRestriction")) {
+        if ($page->isExisting("author") && !$this->yellow->system->get("contactFormRestriction")) {
             $data["userName"] = $page->get("author");
         }
-        if ($page->isExisting("email") && !$this->yellow->system->get("contactEmailRestriction")) {
+        if ($page->isExisting("email") && !$this->yellow->system->get("contactFormRestriction")) {
             $data["userEmail"] = $page->get("email");
         }
         if ($this->yellow->system->get("contactSpamFilter")!="none") {
@@ -90,6 +101,9 @@ class YellowContact {
         if (is_string_empty($data["senderName"]) || is_string_empty($data["senderEmail"]) ||
             is_string_empty($data["message"]) || is_string_empty($data["consent"])) {
             $status = "incomplete";
+        }
+        if ($this->yellow->system->get("contactMailDailyLimit")!=0 && !$this->checkDailyLimit()) {
+            $status = "inactive";
         }
         if ($this->yellow->system->get("contactBotProtection") && !$this->checkBrowserToken($data["token"])) {
             $status = "bot";
@@ -127,7 +141,18 @@ class YellowContact {
             $mailHeaders["X-Spam-Status"] = "Yes, score=1";
         }
         $mailMessage = "$header\r\n\r\n$message\r\n-- \r\n$footer";
-        return $this->yellow->toolbox->mail("contact", $mailHeaders, $mailMessage) ? "done" : "error";
+        $status = $this->yellow->toolbox->mail("contact", $mailHeaders, $mailMessage) ? "done" : "error";
+        $this->writeMailDelivery($status, "Send email message from $senderName <$senderEmail> to $userName <$userEmail>");
+        return $status;
+    }
+    
+    // Write sucessful email delivery to file
+    public function writeMailDelivery($status, $message) {
+        if ($status=="done") {
+            $fileName = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-delivery.ini";
+            $line = date("Y-m-d H:i:s")." info ".trim($message)."\n";
+            $this->yellow->toolbox->appendFile($fileName, $line);
+        }
     }
 
     // Return email header
@@ -171,6 +196,14 @@ class YellowContact {
     // Check browser token
     public function checkBrowserToken($token) {
         return strlenu($token)==24;
+    }
+    
+    // Check if mail delivery has reached daily limit
+    public function checkDailyLimit() {
+        $fileName = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-delivery.ini";
+        $fileData = $this->yellow->toolbox->readFile($fileName);
+        $lines = $this->yellow->toolbox->getTextLines($fileData);
+        return count($lines)<$this->yellow->system->get("contactMailDailyLimit");
     }
     
     // Check if time is within resonable limits

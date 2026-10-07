@@ -1,4 +1,4 @@
-# Contact 1.0.4
+# Contact 1.0.5
 
 Contact form for sending emails. Developed by Anna Svensson.
 
@@ -14,11 +14,11 @@ The contact form is available on your website as `http://website/contact/`. Usua
 
 ## How to restrict a contact form
 
-If you don't want that messages are sent to any contact person, then restrict emails. Open file `system/extensions/yellow-system.ini` and change `ContactEmailRestriction: 1`. All messages go directly to the webmaster and it's no longer possible to set a different email in the [page settings](https://github.com/annaesvensson/yellow-core#settings-page) at the top of a page.
+If you don't want that messages are sent to any contact person, then restrict the contact form. Open file `system/extensions/yellow-system.ini` and change `ContactFormRestriction: 1`. All messages go directly to the webmaster and it's no longer possible to set a different email in the [page settings](https://github.com/annaesvensson/yellow-core#settings-page) at the top of a page.
 
 ## How to protect a contact form from advertising
 
-You can protect your contact form from advertising, spam and unwanted messages. The most important protection mechanisms are activated by default, you can protect your contact form even more if necessary. Open file `system/extensions/yellow-system.ini` and change `ContactLinkProtection: 1`. Messages must then no longer contain clickable links, this blocks many unwanted messages. You can also configure keywords in the spam filter, fortunately, many spammers send the same message multiple times.
+You can protect your contact form from advertising, spam and unwanted messages. The most important protection mechanisms are activated by default. Further protection mechanisms can be activated if necessary. Open file `system/extensions/yellow-system.ini` and change `ContactLinkProtection: 1`. Messages must then no longer contain clickable links, this blocks many unwanted messages, but still allows normal messages and feedback to pass through. You can also configure keywords in the spam filter, fortunately, many spammers send the same message multiple times.
 
 ## Examples
 
@@ -68,7 +68,8 @@ The following settings can be configured in file `system/extensions/yellow-syste
 `Author` = name of the webmaster  
 `Email` = email of the webmaster  
 `From` = email for outgoing messages  
-`ContactEmailRestriction` = enable email restriction, 1 or 0  
+`ContactMailDailyLimit` = number of email deliveries allowed per day, 0 for unlimited  
+`ContactFormRestriction` = enable contact form restriction, 1 or 0  
 `ContactLinkProtection` = enable protection against clickable links, 1 or 0  
 `ContactTimerProtection` = enable protection against sending quickly, 1 or 0  
 `ContactBotProtection` = enable protection against bad bots, 1 or 0  
