@@ -140,7 +140,7 @@ class YellowContact {
         $mailMessage = "$header\r\n\r\n$message\r\n-- \r\n$footer";
         $mailDelivery = date("Y-m-d H:i:s")." info Send email message from $senderName <$senderEmail> to $userName <$userEmail>\n";
         $status = $this->getMailDeliveryStatus();
-        if($status=="ok") {
+        if ($status=="ok") {
             $fileName = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-delivery.ini";
             $status = $this->yellow->toolbox->appendFile($fileName, $mailDelivery) ? "ok" : "error:";
             if ($status=="error") $page->error(500, "Can't write file '$fileName'!");
