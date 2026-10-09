@@ -2,7 +2,7 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "1.0.6";
+    const VERSION = "1.0.7";
     public $yellow;         // access to API
     
     // Handle initialisation
@@ -36,18 +36,18 @@ class YellowContact {
                 $page->setHeader("Cache-Control", "no-cache, no-store");
             }
             if (!$page->isRequest("timer")) {
-                $page->setRequest("timer", "192".substru(time(),-5));
+                $page->setRequest("timer", "192".substru(time(), -5));
                 $page->setHeader("Last-Modified", $this->yellow->toolbox->getHttpDateFormatted(time()));
                 $page->setHeader("Cache-Control", "no-cache, no-store");
             }
             if ($page->getRequest("status")=="send") {
                 list($status, $data) = $this->validateInputData($page);
-                if ($status=="ok") $status = $this->sendMail($data);
+                if ($status=="ok") $status = $this->sendMail($page, $data);
                 $page->setHeader("Last-Modified", $this->yellow->toolbox->getHttpDateFormatted(time()));
                 $page->setHeader("Cache-Control", "no-cache, no-store");
                 $page->set("status", $status);
             } else {
-                $page->set("status", "none");
+                $page->set("status", $this->checkMailDelivery() ? "none" : "closed");
             }
         }
     }
@@ -64,82 +64,69 @@ class YellowContact {
 
     // Validate input data
     public function validateInputData($page) {
-        $status = "ok";
+        $status = $this->checkMailDelivery() ? "ok" : "closed";
+        $senderName = trim(preg_replace("/[^\pL\d\-\. ]/u", "-", $page->getRequest("name")));
+        $senderEmail = trim($page->getRequest("email"));
+        $message = trim($page->getRequest("message"));
+        $consent = trim($page->getRequest("consent"));
+        $referer = trim($page->getRequest("referer"));
+        $timer = trim($page->getRequest("timer"));
+        $token = trim($page->getRequest("token"));
+        $userName = $this->getUserName($page);
+        $userEmail = $this->getUserEmail($page);
+        if (!$this->checkBrowserToken($token)) { $status = "bot"; $page->error(444); }
+        if ($status=="ok" && (is_string_empty($senderName) || is_string_empty($senderEmail) || is_string_empty($message) || is_string_empty($consent))) $status = "incomplete";
+        if ($status=="ok" && !filter_var($senderEmail, FILTER_VALIDATE_EMAIL)) $status = "invalid";
+        if ($status=="ok" && !$this->checkTimerProtection($timer)) $status = "incomplete";
+        if ($status=="ok" && !$this->checkLinkProtection($message)) $status = "review";
+        if ($status=="ok" && !$this->checkSpamFilter($message)) $status = "spam";
         $data = array(
-            "senderName" => trim(preg_replace("/[^\pL\d\-\. ]/u", "-", $page->getRequest("name"))),
-            "senderEmail" => trim($page->getRequest("email")),
-            "message" => trim($page->getRequest("message")),
-            "consent" => trim($page->getRequest("consent")),
-            "referer" => trim($page->getRequest("referer")),
-            "timer" => trim($page->getRequest("timer")),
-            "token" => trim($page->getRequest("token")),
-            "subject" => $page->get("title"),
-            "userName" => $this->yellow->system->get("author"),
-            "userEmail" => $this->yellow->system->get("email"),
+            "senderName" => $senderName,
+            "senderEmail" => $senderEmail,
+            "userName" => $userName,
+            "userEmail" => $userEmail,
+            "message" => $message,
+            "consent" => $consent,
+            "referer" => $referer,
+            "timer" => $timer,
+            "token" => $token,
             "spam" => false);
-        if (is_string_empty($data["token"])) $data["token"] = "none";
-        if ($page->isExisting("author") && !$this->yellow->system->get("contactFormRestriction")) {
-            $data["userName"] = $page->get("author");
-        }
-        if ($page->isExisting("email") && !$this->yellow->system->get("contactFormRestriction")) {
-            $data["userEmail"] = $page->get("email");
-        }
-        if ($this->yellow->system->get("contactSpamFilter")!="none") {
-            $regex = "/".$this->yellow->system->get("contactSpamFilter")."/i";
-            $data["spam"] = preg_match($regex, $data["message"]);
-        }
-        if ($this->yellow->system->get("contactLinkProtection") && $this->checkClickableLink($data["message"])) {
-            $status = "review";
-        }
-        if ($this->yellow->system->get("contactTimerProtection") && !$this->checkTimeElapsed($data["timer"])) {
-            $status = "incomplete";
-        }
-        if (!is_string_empty($data["senderEmail"]) && !filter_var($data["senderEmail"], FILTER_VALIDATE_EMAIL)) $status = "invalid";
-        if (is_string_empty($data["userEmail"]) || !filter_var($data["userEmail"], FILTER_VALIDATE_EMAIL)) $status = "unavailable";
-        if (is_string_empty($data["senderName"]) || is_string_empty($data["senderEmail"]) ||
-            is_string_empty($data["message"]) || is_string_empty($data["consent"])) {
-            $status = "incomplete";
-        }
-        if ($this->yellow->system->get("contactBotProtection") && !$this->checkBrowserToken($data["token"])) {
-            $page->error(444);
-            $status = "bot";
-        }
         if ($status=="ok") $status = $this->yellow->toolbox->validate("contact", $data);
+        if ($status=="spam") { $status = "ok"; $data["spam"] = true; }
         return array($status, $data);
     }
     
     // Send email message to contact person
-    public function sendMail($data) {
-        $status = "ok";
+    public function sendMail($page, $data) {
+        $status = $this->checkMailDelivery() ? "ok" : "closed";
         $senderName = $data["senderName"];
         $senderEmail = $data["senderEmail"];
         $userName = $data["userName"];
         $userEmail = $data["userEmail"];
         $sitename = $this->yellow->system->get("sitename");
         $siteEmail = $this->yellow->system->get("from");
+        $subject = $page->get("title");
         $message = $data["message"];
         $header = $this->getMailHeader($senderName, $senderEmail);
-        $footer = $this->getMailFooter($data["referer"], $this->yellow->page->get("title"));
+        $footer = $this->getMailFooter($data["referer"], $page->get("title"));
         $mailHeaders = array(
             "To" => $this->yellow->lookup->normaliseAddress("$userName <$userEmail>"),
             "From" => $this->yellow->lookup->normaliseAddress("$sitename <$siteEmail>"),
             "Reply-To" => $this->yellow->lookup->normaliseAddress("$senderName <$senderEmail>"),
-            "Subject" => $data["subject"],
+            "Subject" => $subject,
             "Date" => date(DATE_RFC2822),
             "Mime-Version" => "1.0",
             "Content-Type" => "text/plain; charset=utf-8",
-            "X-Time-Elapsed" => $this->getTimeElapsed($data["timer"])." second(s)",
+            "X-Request-Url" => $page->getUrl(),
             "X-Browser-Token" => $data["token"],
-            "X-Referer-Url" => $data["referer"],
-            "X-Request-Url" => $this->yellow->page->getUrl());
+            "X-Time-Elapsed" => $this->getTimeElapsed($data["timer"])." second(s)");
         if ($data["spam"]) {
-            $mailHeaders["Subject"] = $this->yellow->language->getText("contactMailSpam")." ".$data["subject"];
+            $mailHeaders["Subject"] = $this->yellow->language->getText("contactMailSpam")." ".$subject;
             $mailHeaders["X-Spam-Flag"] = "YES";
             $mailHeaders["X-Spam-Status"] = "Yes, score=1";
         }
         $mailMessage = "$header\r\n\r\n$message\r\n-- \r\n$footer";
         $mailDelivery = date("Y-m-d H:i:s")." info Send email message from $senderName <$senderEmail> to $userName <$userEmail>\n";
-        $status = $this->getMailDeliveryStatus();
         if ($status=="ok") {
             $fileName = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-delivery.ini";
             $status = $this->yellow->toolbox->appendFile($fileName, $mailDelivery) ? "ok" : "error:";
@@ -170,18 +157,6 @@ class YellowContact {
         return $footer;
     }
     
-    // Return mail delivery status, stay below daily limit
-    public function getMailDeliveryStatus() {
-        $status = "ok";
-        if ($this->yellow->system->get("contactMailDailyLimit")!=0) {
-            $fileName = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-delivery.ini";
-            $fileData = $this->yellow->toolbox->readFile($fileName);
-            $lines = $this->yellow->toolbox->getTextLines($fileData);
-            if (count($lines)>=$this->yellow->system->get("contactMailDailyLimit")) $status = "inactive";
-        }
-        return $status;
-    }
-    
     // Return page title for URL
     public function getPageTitle($url, $titleDefault) {
         $titleFound = $titleDefault;
@@ -197,29 +172,75 @@ class YellowContact {
         return $titleFound;
     }
     
+    // Return user name
+    public function getUserName($page) {
+        $userName = $this->yellow->system->get("author");
+        if ($page->isExisting("author") && !$this->yellow->system->get("contactFormRestriction")) {
+            $userName = $page->get("author");
+        }
+        return $userName;
+    }
+    
+    // Return user email
+    public function getUserEmail($page) {
+        $userEmail = $this->yellow->system->get("email");
+        if ($page->isExisting("email") && !$this->yellow->system->get("contactFormRestriction")) {
+            $userEmail = $page->get("email");
+        }
+        return $userEmail;
+    }
+    
     // Return elapsed time in seconds
     public function getTimeElapsed($timer) {
-        return substru($timer, 0, 3)!="192" ? 0 : abs(substru(time(),-5) - substru($timer, 3, 5));
+        return substru($timer, 0, 3)!="192" ? 0 : abs(substru(time(), -5) - substru($timer, 3, 5));
+    }
+    
+    // Check mail delivery
+    public function checkMailDelivery() {
+        $ok = true;
+        if ($this->yellow->system->get("contactMailDailyLimit")!=0) {
+            $fileName = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-delivery.ini";
+            $fileData = $this->yellow->toolbox->readFile($fileName);
+            $lines = $this->yellow->toolbox->getTextLines($fileData);
+            if (count($lines)>=$this->yellow->system->get("contactMailDailyLimit")) $ok = false;
+        }
+        return $ok;
     }
 
     // Check browser token
     public function checkBrowserToken($token) {
-        return strlenu($token)==24;
+        return !$this->yellow->system->get("contactBotProtection") || strlenu($token)==24;
     }
     
     // Check if time is within resonable limits
-    public function checkTimeElapsed($timer) {
-        $seconds = $this->getTimeElapsed($timer);
-        return $seconds>=10 && $seconds<=43200;
+    public function checkTimerProtection($timer) {
+        $ok = true;
+        if ($this->yellow->system->get("contactTimerProtection")) {
+            $seconds = $this->getTimeElapsed($timer);
+            $ok = $seconds>=10 && $seconds<=43200;
+        }
+        return $ok;
     }
 
     // Check if text contains clickable links
-    public function checkClickableLink($text) {
-        $found = false;
-        foreach (preg_split("/\s+/", $text) as $token) {
-            if (preg_match("/([\w\-\.]{2,}\.[\w]{2,})/", $token)) $found = true;
-            if (preg_match("/^\w+:\/\//", $token)) $found = true;
+    public function checkLinkProtection($text) {
+        $ok = true;
+        if ($this->yellow->system->get("contactLinkProtection")) {
+            foreach (preg_split("/\s+/", $text) as $token) {
+                if (preg_match("/([\w\-\.]{2,}\.[\w]{2,})/", $token)) $found = true;
+                if (preg_match("/^\w+:\/\//", $token)) $ok = false;
+            }
         }
-        return $found;
+        return $ok;
+    }
+    
+    // Check if text contains spam
+    public function checkSpamFilter($text) {
+        $ok = true;
+        if ($this->yellow->system->get("contactSpamFilter")!="none") {
+            $regex = "/".$this->yellow->system->get("contactSpamFilter")."/i";
+            if (preg_match($regex, $text)) $ok = false;
+        }
+        return $ok;
     }
 }

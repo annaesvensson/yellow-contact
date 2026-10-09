@@ -1,4 +1,4 @@
-# Contact 1.0.6
+# Contact 1.0.7
 
 Kontaktformular zum Versenden von E-Mails. Entwickelt von Anna Svensson.
 
@@ -18,7 +18,7 @@ Falls du nicht willst dass Nachrichten an beliebige Kontaktpersonen gesendet wer
 
 ## Wie man ein Kontaktformular vor Werbung schützt
 
-Du kannst dein Kontaktformular vor Werbung, Spam und unerwünschten Nachrichten schützen. Die wichtigsten Schutzmechanismen sind standardmässig aktiviert. Weitere Schutzmechanismen lassen sich bei Bedarf aktivieren. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactLinkProtection: 1`. Nachrichten dürfen dann keine anklickbaren Links mehr enthalten, das blockiert viele unerwünschte Nachrichten, aber lässt normale Nachrichten weiterhin durch. Du kannst ausserdem Stichwörter im Spamfilter einstellen, netterweise schicken viele Spammer die selbe Nachricht mehrfach.
+Du kannst dein Kontaktformular vor Werbung, Spam und unerwünschten Nachrichten schützen. Die wichtigsten Schutzmechanismen sind standardmässig aktiviert. Weitere Schutzmechanismen lassen sich bei Bedarf aktivieren. Öffne die Datei `system/extensions/yellow-system.ini` und ändere `ContactLinkProtection: 1`. Nachrichten dürfen dann keine anklickbaren Links mehr enthalten, das blockiert viele unerwünschte Nachrichten, aber lässt normale Nachrichten durch. Du kannst ausserdem Stichwörter im Spamfilter einstellen, netterweise schicken viele Spammer die selbe Nachricht mehrfach. Für eigene Schutzmechanismen gibt es eine [API für Entwickler](https://datenstrom.se/de/yellow/help/api-for-developers).
 
 ## Beispiele
 
@@ -60,6 +60,32 @@ Verschiedene Spamfilter in den Einstellungen festlegen:
     ContactSpamFilter: advert|promot|market|click here
     ContactSpamFilter: advert|buy|tokens|likes|followers|subscribers
     ContactSpamFilter: werbung|intelligenz|suchmaschine|optimierung
+
+Erweiterungsdatei für eigenen Schutzmechanismus:
+
+```
+<?php
+// Example extension, https://github.com/annaesvenson/yellow-example
+
+class YellowExample {
+    const VERSION = "1.0.5";
+    public $yellow;         // access to API
+    
+    // Handle initialisation
+    public function onLoad($yellow) {
+        $this->yellow = $yellow;
+    }
+    
+    // Handle validation
+    public function onValidate($action, $data) {
+        $status = null;
+        if ($action=="contact" && $data["senderEmail"]=="spam@montypython.com") {
+            $status = "spam";
+        }
+        return $status;
+    }
+}
+```
 
 ## Einstellungen
 

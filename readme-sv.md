@@ -1,4 +1,4 @@
-# Contact 1.0.6
+# Contact 1.0.7
 
 Kontaktformulär för att skicka e-post. Utvecklad av Anna Svensson.
 
@@ -18,7 +18,7 @@ Om du inte vill att meddelanden skickas till vilken kontaktperson som helst begr
 
 ## Hur man skyddar ett kontaktformulär mot reklam
 
-Du kan skydda ditt kontaktformulär mot reklam, skräppost och oönskade meddelanden. De viktigaste skyddsmekanismerna aktiveras som standard, Andra skyddsmekanismer kan aktiveras vid behov. Öppna filen `system/extensions/yellow-system.ini` och ändra `ContactLinkProtection: 1`. Meddelanden får då inte längre innehålla klickbara länkar, detta blockerar många oönskade meddelanden, men tillåter ändå vanliga meddelanden att passera. Du kan också ställa in nyckelord i skräppostfiltret, lyckligtvis skickar många spammare samma meddelande flera gånger.
+Du kan skydda ditt kontaktformulär mot reklam, skräppost och oönskade meddelanden. De viktigaste skyddsmekanismerna aktiveras som standard, Andra skyddsmekanismer kan aktiveras vid behov. Öppna filen `system/extensions/yellow-system.ini` och ändra `ContactLinkProtection: 1`. Meddelanden får då inte längre innehålla klickbara länkar, detta blockerar många oönskade meddelanden, men tillåter vanliga meddelanden att passera. Du kan också ställa in nyckelord i skräppostfiltret, lyckligtvis skickar många spammare samma meddelande flera gånger. För egna skyddsmekanismer finns det ett [API för utvecklare](https://datenstrom.se/sv/yellow/help/api-for-developers).
 
 ## Exempel
 
@@ -60,6 +60,32 @@ Konfigurera olika skräppostfilter i inställningar:
     ContactSpamFilter: advert|promot|market|click here
     ContactSpamFilter: advert|buy|tokens|likes|followers|subscribers
     ContactSpamFilter: reklam|intelligens|sökmotor|optimering
+
+Tillägsfil för egen skyddsmekanism:
+
+```
+<?php
+// Example extension, https://github.com/annaesvenson/yellow-example
+
+class YellowExample {
+    const VERSION = "1.0.5";
+    public $yellow;         // access to API
+    
+    // Handle initialisation
+    public function onLoad($yellow) {
+        $this->yellow = $yellow;
+    }
+    
+    // Handle validation
+    public function onValidate($action, $data) {
+        $status = null;
+        if ($action=="contact" && $data["senderEmail"]=="spam@montypython.com") {
+            $status = "spam";
+        }
+        return $status;
+    }
+}
+```
 
 ## Inställningar
 
