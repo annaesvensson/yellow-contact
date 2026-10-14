@@ -221,7 +221,6 @@ class YellowContact {
         if ($this->yellow->system->get("contactBotProtection")) {
             $token = $this->yellow->lookup->normaliseInput($page->getRequest("token"));
             $ok = strlenu($token)==24 && substru($token, 0, 8)==$this->calculateChallenge($page->get("titleHeader"));
-            echo $token;
         }
         return $ok;
     }
