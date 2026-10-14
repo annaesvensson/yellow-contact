@@ -17,19 +17,19 @@ var initContactFromDOM = function() {
 
     // Generate browser token
     function generateBrowserToken() {
-        var part1 = calculateChecksum(document.title);
-        var part2 = calculateChecksum(navigator.userAgent);
+        var part1 = calculateChallenge(document.title);
+        var part2 = calculateChallenge(navigator.userAgent);
         var byteArray = new Uint8Array(4);
         if (window.crypto.getRandomValues) window.crypto.getRandomValues(byteArray);
         var part3 = Array.from(byteArray, function(byte) { return byte.toString(16).padStart(2, "0"); }).join("");
         return part1+part2+part3;
     }
     
-    // Calculate 32 bit checksum
-    function calculateChecksum(text) {
-        var checksum = 0;
-        for (var i=0, l=text.length; i<l; i++) checksum += (text.charCodeAt(i) * (i+1));
-        return (checksum & 0xffffffff).toString(16).padStart(8, "0");
+    // Calculate challenge from text
+    function calculateChallenge(text) {
+        var value = 0;
+        for (var i=0, l=text.length; i<l; i++) value += text.charCodeAt(i);
+        return (value & 0xffffffff).toString(16).padStart(8, "0");
     }
     
     // Bind events to contact forms

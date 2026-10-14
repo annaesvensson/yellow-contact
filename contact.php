@@ -2,7 +2,7 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "1.0.7";
+    const VERSION = "1.0.8";
     public $yellow;         // access to API
     
     // Handle initialisation
@@ -65,16 +65,16 @@ class YellowContact {
     // Validate input data
     public function validateInputData($page) {
         $status = $this->checkMailDelivery() ? "ok" : "closed";
-        $senderName = trim(preg_replace("/[^\pL\d\-\. ]/u", "-", $page->getRequest("name")));
-        $senderEmail = trim($page->getRequest("email"));
-        $message = trim($page->getRequest("message"));
-        $consent = trim($page->getRequest("consent"));
-        $referer = trim($page->getRequest("referer"));
-        $timer = trim($page->getRequest("timer"));
-        $token = trim($page->getRequest("token"));
+        $senderName = $this->yellow->lookup->normaliseInput($page->getRequest("name"), "name");
+        $senderEmail = $this->yellow->lookup->normaliseInput($page->getRequest("email"));
+        $message = $this->yellow->lookup->normaliseInput($page->getRequest("message"), "textarea");
+        $consent = $this->yellow->lookup->normaliseInput($page->getRequest("consent"));
+        $referer = $this->yellow->lookup->normaliseInput($page->getRequest("referer"));
+        $timer = $this->yellow->lookup->normaliseInput($page->getRequest("timer"));
+        $token = $this->yellow->lookup->normaliseInput($page->getRequest("token"));
         $userName = $this->getUserName($page);
         $userEmail = $this->getUserEmail($page);
-        if (!$this->checkBrowserToken($token)) { $status = "bot"; $page->error(444); }
+        if (!$this->checkBrowserToken($page)) { $status = "bot"; $page->error(444); }
         if ($status=="ok" && (is_string_empty($senderName) || is_string_empty($senderEmail) || is_string_empty($message) || is_string_empty($consent))) $status = "incomplete";
         if ($status=="ok" && !filter_var($senderEmail, FILTER_VALIDATE_EMAIL)) $status = "invalid";
         if ($status=="ok" && !$this->checkTimerProtection($timer)) $status = "incomplete";
@@ -195,6 +195,14 @@ class YellowContact {
         return substru($timer, 0, 3)!="192" ? 0 : abs(substru(time(), -5) - substru($timer, 3, 5));
     }
     
+    // Calculate challenge from text
+    public function calculateChallenge($text) {
+        $value = 0;
+        $codeunits = unpack("n*", mb_convert_encoding($text, "UTF-16BE", "UTF-8"));
+        for ($i=0, $l=count($codeunits); $i<$l; ++$i) $value += $codeunits[$i+1];
+        return str_pad(dechex($value & 0xffffffff), 8, "0", STR_PAD_LEFT);
+    }
+    
     // Check mail delivery
     public function checkMailDelivery() {
         $ok = true;
@@ -208,8 +216,14 @@ class YellowContact {
     }
 
     // Check browser token
-    public function checkBrowserToken($token) {
-        return !$this->yellow->system->get("contactBotProtection") || strlenu($token)==24;
+    public function checkBrowserToken($page) {
+        $ok = true;
+        if ($this->yellow->system->get("contactBotProtection")) {
+            $token = $this->yellow->lookup->normaliseInput($page->getRequest("token"));
+            $ok = strlenu($token)==24 && substru($token, 0, 8)==$this->calculateChallenge($page->get("titleHeader"));
+            echo $token;
+        }
+        return $ok;
     }
     
     // Check if time is within resonable limits
