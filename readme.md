@@ -1,4 +1,4 @@
-# Contact 1.0.8
+# Contact 1.0.9
 
 Contact form for sending emails. Developed by Anna Svensson.
 

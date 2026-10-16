@@ -2,7 +2,7 @@
 // Contact extension, https://github.com/annaesvensson/yellow-contact
 
 class YellowContact {
-    const VERSION = "1.0.8";
+    const VERSION = "1.0.9";
     public $yellow;         // access to API
     
     // Handle initialisation
@@ -19,9 +19,9 @@ class YellowContact {
     // Handle update
     public function onUpdate($action) {
         if ($action=="clean" || $action=="daily" || $action=="uninstall") {
-            $fileName = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-delivery.ini";
-            if (is_file($fileName) && !$this->yellow->toolbox->deleteFile($fileName)) {
-                $this->yellow->toolbox->log("error", "Can't delete file '$fileName'!");
+            $fileNameDaily = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-daily.ini";
+            if (is_file($fileNameDaily) && !$this->yellow->toolbox->deleteFile($fileNameDaily)) {
+                $this->yellow->toolbox->log("error", "Can't delete file '$fileNameDaily'!");
             }
         }
     }
@@ -47,7 +47,7 @@ class YellowContact {
                 $page->setHeader("Cache-Control", "no-cache, no-store");
                 $page->set("status", $status);
             } else {
-                $page->set("status", $this->checkMailDelivery() ? "none" : "closed");
+                $page->set("status", $this->isMailDelivery() ? "none" : "closed");
             }
         }
     }
@@ -64,7 +64,7 @@ class YellowContact {
 
     // Validate input data
     public function validateInputData($page) {
-        $status = $this->checkMailDelivery() ? "ok" : "closed";
+        $status = $this->isMailDelivery() ? "ok" : "closed";
         $senderName = $this->yellow->lookup->normaliseInput($page->getRequest("name"), "name");
         $senderEmail = $this->yellow->lookup->normaliseInput($page->getRequest("email"));
         $message = $this->yellow->lookup->normaliseInput($page->getRequest("message"), "textarea");
@@ -98,7 +98,7 @@ class YellowContact {
     
     // Send email message to contact person
     public function sendMail($page, $data) {
-        $status = $this->checkMailDelivery() ? "ok" : "closed";
+        $status = $this->isMailDelivery() ? "ok" : "closed";
         $senderName = $data["senderName"];
         $senderEmail = $data["senderEmail"];
         $userName = $data["userName"];
@@ -125,14 +125,14 @@ class YellowContact {
             $mailHeaders["X-Spam-Flag"] = "YES";
             $mailHeaders["X-Spam-Status"] = "Yes, score=1";
         }
-        $mailMessage = "$header\r\n\r\n$message\r\n-- \r\n$footer";
-        $mailDelivery = date("Y-m-d H:i:s")." info Send email message from $senderName <$senderEmail> to $userName <$userEmail>\n";
         if ($status=="ok") {
-            $fileName = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-delivery.ini";
-            $status = $this->yellow->toolbox->appendFile($fileName, $mailDelivery) ? "ok" : "error:";
-            if ($status=="error") $page->error(500, "Can't write file '$fileName'!");
+            $line = date("Y-m-d H:i:s")." info Send email message from $senderName <$senderEmail> to $userName <$userEmail>\n";
+            $fileNameDaily = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-daily.ini";
+            $status = $this->yellow->toolbox->appendFile($fileNameDaily, $line) ? "ok" : "error:";
+            if ($status=="error") $page->error(500, "Can't write file '$fileNameDaily'!");
         }
         if ($status=="ok") {
+            $mailMessage = "$header\r\n\r\n$message\r\n-- \r\n$footer";
             $status = $this->yellow->toolbox->mail("contact", $mailHeaders, $mailMessage) ? "done" : "error";
             if ($status=="error") $page->error(500, "Can't send email message!");
         }
@@ -203,18 +203,6 @@ class YellowContact {
         return str_pad(dechex($value & 0xffffffff), 8, "0", STR_PAD_LEFT);
     }
     
-    // Check mail delivery
-    public function checkMailDelivery() {
-        $ok = true;
-        if ($this->yellow->system->get("contactMailDailyLimit")!=0) {
-            $fileName = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-delivery.ini";
-            $fileData = $this->yellow->toolbox->readFile($fileName);
-            $lines = $this->yellow->toolbox->getTextLines($fileData);
-            if (count($lines)>=$this->yellow->system->get("contactMailDailyLimit")) $ok = false;
-        }
-        return $ok;
-    }
-
     // Check browser token
     public function checkBrowserToken($page) {
         $ok = true;
@@ -253,6 +241,18 @@ class YellowContact {
         if ($this->yellow->system->get("contactSpamFilter")!="none") {
             $regex = "/".$this->yellow->system->get("contactSpamFilter")."/i";
             if (preg_match($regex, $text)) $ok = false;
+        }
+        return $ok;
+    }
+    
+    // Check if mail delivery possible
+    public function isMailDelivery() {
+        $ok = true;
+        if ($this->yellow->system->get("contactMailDailyLimit")!=0) {
+            $fileNameDaily = $this->yellow->system->get("coreWorkerDirectory")."contact-mail-daily.ini";
+            $fileData = $this->yellow->toolbox->readFile($fileNameDaily);
+            $lines = $this->yellow->toolbox->getTextLines($fileData);
+            if (count($lines)>=$this->yellow->system->get("contactMailDailyLimit")) $ok = false;
         }
         return $ok;
     }
